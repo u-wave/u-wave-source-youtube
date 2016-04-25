@@ -1,0 +1,41 @@
+{
+  "name": "u-wave-source-youtube",
+  "version": "0.0.0",
+  "description": "YouTube media source for üWave.",
+  "license": "MIT",
+  "repository": "u-wave/u-wave-source-youtube",
+  "author": "Sooyou",
+  "contributors": [
+    "Renée Kooi <renee@kooi.me>"
+  ],
+  "keywords": [
+    "u-wave-source",
+    "youtube"
+  ],
+  "engines": {
+    "node": ">= 4"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "chunk": "0.0.2",
+    "get-artist-title": "^0.3.0",
+    "get-youtube-id": "^1.0.0",
+    "googleapis": "^5.2.1",
+    "object-values": "^1.0.0",
+    "parse-iso-duration": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.7.7",
+    "babel-eslint": "^6.0.3",
+    "babel-preset-es2015-node4": "^2.1.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "eslint": "^2.8.0",
+    "eslint-config-airbnb-base": "^1.0.3",
+    "eslint-plugin-import": "^1.5.0"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "test": "eslint src",
+    "build": "babel --out-file index.js src/index.js"
+  }
+}
