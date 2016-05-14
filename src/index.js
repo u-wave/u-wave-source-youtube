@@ -180,11 +180,18 @@ export default function youTubeSource(uw, opts = {}) {
   async function getPlaylistItems(playlistID) {
     let page = null;
     const playlistItems = [];
-    do {
-      const res = await getPlaylistPage(playlistID, page);
-      page = res.nextPage;
-      playlistItems.push(...res.items);
-    } while (page);
+    try {
+      do {
+        const res = await getPlaylistPage(playlistID, page);
+        page = res.nextPage;
+        playlistItems.push(...res.items);
+      } while (page);
+    } catch (e) {
+      throw new Error(
+        'That playlist could not be imported. If it\'s a private playlist, ' +
+        'change its visibility to Unlisted and try again.'
+      );
+    }
 
     const ids = playlistItems.map(item => item.contentDetails.videoId);
     const medias = await get(ids);
