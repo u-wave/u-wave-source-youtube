@@ -148,14 +148,15 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function search(query, page = null) {
+    // When searching for a video URL, we want to search for the video ID
+    // only, because search results are very inconsistent with some types of
+    // URLs.
+    const id = getYouTubeID(query, { fuzzy: false });
     const result = await youTubeSearch({
       ...defaultSearchOptions,
       ...searchOptions,
       ...params,
-      // When searching for a video URL, we want to search for the video ID
-      // only, because search results are very inconsistent with some types of
-      // URLs.
-      q: getYouTubeID(query, { fuzzy: false }) || query,
+      q: id ? `"${id}"` : query,
       pageToken: page
     });
 
