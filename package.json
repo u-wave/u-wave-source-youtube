@@ -1,6 +1,6 @@
 {
   "name": "u-wave-source-youtube",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "YouTube media source for üWave.",
   "license": "MIT",
   "repository": "u-wave/u-wave-source-youtube",
