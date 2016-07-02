@@ -299,22 +299,23 @@ export default function youTubeSource(uw, opts = {}) {
     return playlists;
   }
 
-  async function getPlaylistMetasForUser(url) {
-    const channel = await getChannelMeta(url);
-
-    const specials = youTubeGetPlaylists({
+  function getSpecialChannelPlaylists(channel) {
+    return youTubeGetPlaylists({
       ...params,
       ...getPlaylistsOptions,
       id: values(channel.playlists)
-    });
+    }).then(result => result.items);
+  }
+
+  async function getPlaylistMetasForUser(url) {
+    const channel = await getChannelMeta(url);
+
+    const specials = getSpecialChannelPlaylists(channel);
     const playlists = getChannelPlaylists(channel.id);
 
     const result = await Promise.all([specials, playlists]);
 
-    const allPlaylists = [
-      ...result[0][0].items,
-      ...result[1]
-    ];
+    const allPlaylists = result[0].concat(result[1]);
 
     return {
       channel: { id: channel.id, title: channel.title },
