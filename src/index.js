@@ -338,7 +338,7 @@ export default function youTubeSource(uw, opts = {}) {
   return {
     search,
     get: get, // eslint-disable-line object-shorthand
-    async 'import'(ctx, action) {
+    async import(ctx, action) {
       if (action.action === 'channel') {
         return await getPlaylistMetasForUser(action.url);
       }
