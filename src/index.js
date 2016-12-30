@@ -183,6 +183,9 @@ export default function youTubeSource(uw, opts = {}) {
     const playlistItems = [];
     try {
       do {
+        // This `await` is OK since we need to fetch this page to find out how
+        // to fetch the next.
+        // eslint-disable-next-line no-await-in-loop
         const res = await getPlaylistPage(playlistID, page);
         page = res.nextPage;
         playlistItems.push(...res.items);
@@ -291,6 +294,9 @@ export default function youTubeSource(uw, opts = {}) {
     const playlists = [];
     let page;
     do {
+      // This `await` is OK since we need to fetch this page to find out how
+      // to fetch the next.
+      // eslint-disable-next-line no-await-in-loop
       const res = await getChannelPlaylistsPage(channelID, page);
       page = res.nextPage;
       playlists.push(...res.items);
@@ -332,7 +338,7 @@ export default function youTubeSource(uw, opts = {}) {
 
   async function doImport(ctx, name, playlistID) {
     const items = await getPlaylistItems(playlistID);
-    return await ctx.createPlaylist(name, items);
+    return ctx.createPlaylist(name, items);
   }
 
   return {
@@ -340,7 +346,7 @@ export default function youTubeSource(uw, opts = {}) {
     get: get, // eslint-disable-line object-shorthand
     async import(ctx, action) {
       if (action.action === 'channel') {
-        return await getPlaylistMetasForUser(action.url);
+        return getPlaylistMetasForUser(action.url);
       }
       if (action.action === 'playlist') {
         const importable = await getImportablePlaylist(action.url);
@@ -348,7 +354,7 @@ export default function youTubeSource(uw, opts = {}) {
         return importable;
       }
       if (action.action === 'importplaylist') {
-        return await doImport(ctx, action.name, action.id);
+        return doImport(ctx, action.name, action.id);
       }
 
       throw new TypeError(`Unknown action "${action}"`);
