@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
-import getArtistTitle, { fallBackToArtist } from 'get-artist-title';
+import getArtistTitle from 'get-artist-title';
 import chunk from 'chunk';
 import values from 'object-values';
 
@@ -40,9 +40,9 @@ function getBlockedCountryCodes(contentDetails) {
 }
 
 function normalizeMedia(video) {
-  const [artist, title] = getArtistTitle(video.snippet.title, [
-    'base', fallBackToArtist(video.snippet.channelTitle)
-  ]);
+  const [artist, title] = getArtistTitle(video.snippet.title, {
+    defaultArtist: video.snippet.channelTitle
+  });
 
   return {
     sourceID: video.id,
