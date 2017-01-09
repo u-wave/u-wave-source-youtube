@@ -1,0 +1,36 @@
+{
+ "items": [
+  {
+   "id": "t6gDp9IsBgw",
+   "snippet": {
+    "title": "신의 놀이 (Playing God) (Official Video)",
+    "thumbnails": {
+     "default": {
+      "url": "https://i.ytimg.com/vi/t6gDp9IsBgw/default.jpg",
+      "width": 120,
+      "height": 90
+     },
+     "medium": {
+      "url": "https://i.ytimg.com/vi/t6gDp9IsBgw/mqdefault.jpg",
+      "width": 320,
+      "height": 180
+     },
+     "high": {
+      "url": "https://i.ytimg.com/vi/t6gDp9IsBgw/hqdefault.jpg",
+      "width": 480,
+      "height": 360
+     },
+     "standard": {
+      "url": "https://i.ytimg.com/vi/t6gDp9IsBgw/sddefault.jpg",
+      "width": 640,
+      "height": 480
+     }
+    },
+    "channelTitle": "lang lee"
+   },
+   "contentDetails": {
+    "duration": "PT3M38S"
+   }
+  }
+ ]
+}
