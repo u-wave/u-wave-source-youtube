@@ -25,21 +25,22 @@
     "parse-iso-duration": "^1.0.0"
   },
   "devDependencies": {
-    "ava": "^0.19.0",
     "babel-cli": "^6.7.7",
     "babel-eslint": "^7.0.0",
     "babel-preset-es2015-node4": "^2.1.0",
     "babel-preset-stage-2": "^6.5.0",
+    "babel-register": "^6.24.1",
     "eslint": "^3.1.1",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.0.1",
-    "nock": "^9.0.2"
+    "nock": "^9.0.2",
+    "tape": "^4.6.3"
   },
   "scripts": {
     "prepublish": "npm run build",
-    "test": "npm run ava && npm run lint",
+    "test": "npm run tape && npm run lint",
     "lint": "eslint src",
-    "ava": "ava --serial test.js",
+    "tape": "tape -r ./test/init.js ./test/test.js",
     "build": "babel --out-file index.js src/index.js"
   }
 }
