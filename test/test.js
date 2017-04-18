@@ -1,7 +1,7 @@
-import test from 'ava';
-import nock from 'nock';
-import * as path from 'path';
-import youTubeSource from './';
+const test = require('tape');
+const nock = require('nock');
+const path = require('path');
+const youTubeSource = require('../').default;
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';
 
@@ -10,13 +10,15 @@ const createSource = () =>
 
 const API_HOST = 'https://www.googleapis.com';
 
-const fixture = name => path.join(__dirname, 'test/responses', `${name}.json`);
+const fixture = name => path.join(__dirname, 'responses', `${name}.json`);
 
 test('providing a key is required', (t) => {
   t.throws(
     () => youTubeSource({}),
     /Expected a YouTube API key/
   );
+
+  t.end();
 });
 
 test('searching for videos', async (t) => {
@@ -38,6 +40,8 @@ test('searching for videos', async (t) => {
     t.true('artist' in item);
     t.true('title' in item);
   });
+
+  t.end();
 });
 
 test('get videos by id', async (t) => {
@@ -53,6 +57,8 @@ test('get videos by id', async (t) => {
 
   t.is(items[0].artist, 'LAYBACKSOUND');
   t.is(items[1].artist, 'KIRARA');
+
+  t.end();
 });
 
 test('defaults to using the channel name as the artist name', async (t) => {
@@ -68,4 +74,6 @@ test('defaults to using the channel name as the artist name', async (t) => {
   t.is(items.length, 1);
   t.is(items[0].artist, 'lang lee');
   t.is(items[0].title, '신의 놀이 (Playing God)');
+
+  t.end();
 });
