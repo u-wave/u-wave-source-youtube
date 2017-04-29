@@ -53,6 +53,9 @@ function normalizeMedia(video) {
     duration: parseYouTubeDuration(video.contentDetails.duration),
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
     sourceData: {
+      // Can be used by clients to determine the aspect ratio.
+      embedWidth: video.player ? parseInt(video.player.embedWidth, 10) : null,
+      embedHeight: video.player ? parseInt(video.player.embedHeight, 10) : null,
       blockedIn: getBlockedCountryCodes(video.contentDetails)
     }
   };
@@ -126,15 +129,21 @@ export default function youTubeSource(uw, opts = {}) {
   async function getPage(sourceIDs) {
     const result = await youTubeGet({
       ...params,
-      part: 'snippet,contentDetails',
+      part: 'snippet,contentDetails,player',
       fields: `
         items(
           id,
           snippet(title, channelTitle, thumbnails),
-          contentDetails(duration, regionRestriction)
+          contentDetails(duration, regionRestriction),
+          player(embedWidth, embedHeight)
         )
       `.replace(/\s+/g, ''),
-      id: sourceIDs.join(',')
+      id: sourceIDs.join(','),
+      // These are the maximum acceptable values, we only send them to force
+      // YouTube to send an embedWidth and embedHeight back so we can calculate
+      // the video aspect ratio.
+      maxWidth: 8192,
+      maxHeight: 8192
     });
 
     return result.items.map(normalizeMedia);
