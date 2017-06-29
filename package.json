@@ -20,7 +20,7 @@
     "chunk": "0.0.2",
     "get-artist-title": "^1.0.0",
     "get-youtube-id": "^1.0.0",
-    "googleapis": "^19.0.0",
+    "googleapis": "^20.0.1",
     "object-values": "^1.0.0",
     "parse-iso-duration": "^1.0.0"
   },
