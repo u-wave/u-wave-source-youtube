@@ -84,9 +84,9 @@ export function getPlaylistID(url) {
 }
 
 const defaultSearchOptions = {
-  part: 'id',
+  part: 'id,snippet',
   fields: `
-    items(id/videoId),
+    items(id/videoId, snippet/liveBroadcastContent),
     pageInfo,
     nextPageToken,
     prevPageToken
@@ -146,12 +146,14 @@ export default function youTubeSource(uw, opts = {}) {
       maxHeight: 8192
     });
 
-    return result.items.map(normalizeMedia);
+    return result.items.map(normalizeMedia).filter(item => item.duration > 0);
   }
 
   async function get(sourceIDs) {
+    const ids = sourceIDs.map(id => getYouTubeID(id) || id);
+
     const pages = await Promise.all(
-      chunk(sourceIDs, 50).map(getPage)
+      chunk(ids, 50).map(getPage)
     );
     return pages.reduce((result, page) => result.concat(page), []);
   }
@@ -162,14 +164,17 @@ export default function youTubeSource(uw, opts = {}) {
     // URLs.
     const id = getYouTubeID(query, { fuzzy: false });
     const result = await youTubeSearch({
+      ...params,
       ...defaultSearchOptions,
       ...searchOptions,
-      ...params,
       q: id ? `"${id}"` : query,
       pageToken: page
     });
 
-    return get(result.items.map(item => item.id.videoId));
+    return get(
+      result.items
+        .filter(item => !item.snippet || item.snippet.liveBroadcastContent === 'none')
+        .map(item => item.id.videoId));
   }
 
   async function getPlaylistPage(playlistID, page = null) {
