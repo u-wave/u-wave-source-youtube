@@ -116,11 +116,9 @@ const getPlaylistsOptions = {
 
 export default function youTubeSource(uw, opts = {}) {
   if (!opts.key) {
-    throw new TypeError(
-      'Expected a YouTube API key in "options.key". For information on how to ' +
+    throw new TypeError('Expected a YouTube API key in "options.key". For information on how to ' +
       'configure your YouTube API access, see ' +
-      'https://developers.google.com/youtube/v3/getting-started.'
-    );
+      'https://developers.google.com/youtube/v3/getting-started.');
   }
 
   const params = opts.key ? { key: opts.key } : {};
@@ -152,9 +150,7 @@ export default function youTubeSource(uw, opts = {}) {
   async function get(sourceIDs) {
     const ids = sourceIDs.map(id => getYouTubeID(id) || id);
 
-    const pages = await Promise.all(
-      chunk(ids, 50).map(getPage)
-    );
+    const pages = await Promise.all(chunk(ids, 50).map(getPage));
     return pages.reduce((result, page) => result.concat(page), []);
   }
 
@@ -174,10 +170,9 @@ export default function youTubeSource(uw, opts = {}) {
     const isVideo = item => item.id && item.id.videoId;
     const isBroadcast = item => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return get(
-      result.items
-        .filter(item => isVideo(item) && !isBroadcast(item))
-        .map(item => item.id.videoId));
+    return get(result.items
+      .filter(item => isVideo(item) && !isBroadcast(item))
+      .map(item => item.id.videoId));
   }
 
   async function getPlaylistPage(playlistID, page = null) {
@@ -208,10 +203,8 @@ export default function youTubeSource(uw, opts = {}) {
         playlistItems.push(...res.items);
       } while (page);
     } catch (e) {
-      throw new Error(
-        'That playlist could not be imported. If it\'s a private playlist, ' +
-        'change its visibility to Unlisted and try again.'
-      );
+      throw new Error('That playlist could not be imported. If it\'s a private playlist, ' +
+        'change its visibility to Unlisted and try again.');
     }
 
     const ids = playlistItems.map(item => item.contentDetails.videoId);
@@ -238,10 +231,8 @@ export default function youTubeSource(uw, opts = {}) {
   async function getImportablePlaylist(url) {
     const playlistID = getPlaylistID(url);
     if (!playlistID) {
-      throw new Error(
-        'Invalid playlist URL. Please provide a direct link to the playlist ' +
-        'you want to import.'
-      );
+      throw new Error('Invalid playlist URL. Please provide a direct link to the playlist ' +
+        'you want to import.');
     }
     const playlist = await getPlaylistMeta(playlistID);
     const items = await getPlaylistItems(playlistID);
@@ -270,16 +261,14 @@ export default function youTubeSource(uw, opts = {}) {
       maxResults: 1
     };
     if (match) {
-      request.id = match[1];
+      request.id = match[1]; // eslint-disable-line prefer-destructuring
     } else {
       match = url.match(rxUserUrl);
       if (match) {
-        request.forUsername = match[1];
+        request.forUsername = match[1]; // eslint-disable-line prefer-destructuring
       } else {
-        throw new Error(
-          'Invalid channel URL. Please provide a direct link to the channel or ' +
-          'user you want to import playlists from.'
-        );
+        throw new Error('Invalid channel URL. Please provide a direct link to the channel or ' +
+          'user you want to import playlists from.');
       }
     }
 
