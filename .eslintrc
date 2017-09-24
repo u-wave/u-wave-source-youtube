@@ -1,9 +1,0 @@
-{
-  "extends": "airbnb-base",
-  "parser": "babel-eslint",
-
-  "rules": {
-    "comma-dangle": ["error", "never"],
-    "generator-star-spacing": "off"
-  }
-}

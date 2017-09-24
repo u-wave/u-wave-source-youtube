@@ -41,7 +41,7 @@ function getBlockedCountryCodes(contentDetails) {
 
 function normalizeMedia(video) {
   const [artist, title] = getArtistTitle(video.snippet.title, {
-    defaultArtist: video.snippet.channelTitle
+    defaultArtist: video.snippet.channelTitle,
   });
 
   return {
@@ -56,8 +56,8 @@ function normalizeMedia(video) {
       // Can be used by clients to determine the aspect ratio.
       embedWidth: video.player ? parseInt(video.player.embedWidth, 10) : null,
       embedHeight: video.player ? parseInt(video.player.embedHeight, 10) : null,
-      blockedIn: getBlockedCountryCodes(video.contentDetails)
-    }
+      blockedIn: getBlockedCountryCodes(video.contentDetails),
+    },
   };
 }
 
@@ -94,7 +94,7 @@ const defaultSearchOptions = {
   type: 'video',
   maxResults: 50,
   safeSearch: 'none',
-  videoSyndicated: true
+  videoSyndicated: true,
 };
 
 const getPlaylistsOptions = {
@@ -111,7 +111,7 @@ const getPlaylistsOptions = {
     pageInfo,
     nextPageToken
   `.replace(/\s+/g, ''),
-  maxResults: 50
+  maxResults: 50,
 };
 
 export default function youTubeSource(uw, opts = {}) {
@@ -141,7 +141,7 @@ export default function youTubeSource(uw, opts = {}) {
       // YouTube to send an embedWidth and embedHeight back so we can calculate
       // the video aspect ratio.
       maxWidth: 8192,
-      maxHeight: 8192
+      maxHeight: 8192,
     });
 
     return result.items.map(normalizeMedia).filter(item => item.duration > 0);
@@ -164,7 +164,7 @@ export default function youTubeSource(uw, opts = {}) {
       ...defaultSearchOptions,
       ...searchOptions,
       q: id ? `"${id}"` : query,
-      pageToken: page
+      pageToken: page,
     });
 
     const isVideo = item => item.id && item.id.videoId;
@@ -181,12 +181,12 @@ export default function youTubeSource(uw, opts = {}) {
       part: 'contentDetails',
       playlistId: playlistID,
       maxResults: 50,
-      pageToken: page
+      pageToken: page,
     });
 
     return {
       nextPage: result.nextPageToken,
-      items: result.items
+      items: result.items,
     };
   }
 
@@ -213,7 +213,7 @@ export default function youTubeSource(uw, opts = {}) {
     return medias.map(media => ({
       ...media,
       start: 0,
-      end: media.duration
+      end: media.duration,
     }));
   }
 
@@ -223,7 +223,7 @@ export default function youTubeSource(uw, opts = {}) {
       part: 'snippet',
       fields: 'items(id,snippet/title)',
       id: playlistID,
-      maxResults: 1
+      maxResults: 1,
     });
     return result.items[0];
   }
@@ -239,9 +239,9 @@ export default function youTubeSource(uw, opts = {}) {
     return {
       playlist: {
         sourceID: playlist.id,
-        name: playlist.snippet.title
+        name: playlist.snippet.title,
       },
-      items
+      items,
     };
   }
 
@@ -258,7 +258,7 @@ export default function youTubeSource(uw, opts = {}) {
           contentDetails/relatedPlaylists/uploads
         )
       `.replace(/\s+/g, ''),
-      maxResults: 1
+      maxResults: 1,
     };
     if (match) {
       request.id = match[1]; // eslint-disable-line prefer-destructuring
@@ -278,7 +278,7 @@ export default function youTubeSource(uw, opts = {}) {
     return {
       id: channel.id,
       title: channel.snippet.title,
-      playlists: channel.contentDetails.relatedPlaylists
+      playlists: channel.contentDetails.relatedPlaylists,
     };
   }
 
@@ -287,12 +287,12 @@ export default function youTubeSource(uw, opts = {}) {
       ...params,
       ...getPlaylistsOptions,
       channelId: channelID,
-      pageToken: page
+      pageToken: page,
     });
 
     return {
       nextPage: result.nextPageToken,
-      items: result.items
+      items: result.items,
     };
   }
 
@@ -315,7 +315,7 @@ export default function youTubeSource(uw, opts = {}) {
     return youTubeGetPlaylists({
       ...params,
       ...getPlaylistsOptions,
-      id: values(channel.playlists)
+      id: values(channel.playlists),
     }).then(result => result.items);
   }
 
@@ -337,8 +337,8 @@ export default function youTubeSource(uw, opts = {}) {
         name: item.snippet.title,
         description: item.snippet.description,
         size: item.contentDetails.itemCount,
-        thumbnail: getBestThumbnail(item.snippet.thumbnails)
-      }))
+        thumbnail: getBestThumbnail(item.snippet.thumbnails),
+      })),
     };
   }
 
@@ -350,7 +350,7 @@ export default function youTubeSource(uw, opts = {}) {
   return {
     search,
     get: get, // eslint-disable-line object-shorthand
-    async import(ctx, action) {
+    import: async (ctx, action) => {
       if (action.action === 'channel') {
         return getPlaylistMetasForUser(action.url);
       }
@@ -364,6 +364,6 @@ export default function youTubeSource(uw, opts = {}) {
       }
 
       throw new TypeError(`Unknown action "${action}"`);
-    }
+    },
   };
 }
