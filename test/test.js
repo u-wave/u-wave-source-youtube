@@ -15,7 +15,7 @@ const fixture = name => path.join(__dirname, 'responses', `${name}.json`);
 test('providing a key is required', (t) => {
   t.throws(
     () => youTubeSource({}),
-    /Expected a YouTube API key/
+    /Expected a YouTube API key/,
   );
 
   t.end();

@@ -38,7 +38,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "test": "npm run tape && npm run lint",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "tape": "tape -r ./test/init.js ./test/test.js",
     "build": "babel --out-file index.js src/index.js"
   }

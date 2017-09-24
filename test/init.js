@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const Test = require('tape/lib/test');
 require('babel-register');
 
@@ -11,7 +12,8 @@ Test.prototype.run = function run() {
     this.comment(`SKIP ${this.name}`);
   }
   if (!this._cb || this._skip) {
-    return this._end();
+    this._end();
+    return;
   }
   if (this._timeout != null) {
     this.timeoutAfter(this._timeout);
@@ -21,15 +23,13 @@ Test.prototype.run = function run() {
   // Start custom code
   const result = this._cb(this);
   if (result && result.then) {
-    result.catch(
-      (err) => {
-        if (err) {
-          this.error(err);
-        } else {
-          this.fail(err);
-        }
+    result.catch((err) => {
+      if (err) {
+        this.error(err);
+      } else {
+        this.fail(err);
       }
-    );
+    });
   }
   // End custom code
 
