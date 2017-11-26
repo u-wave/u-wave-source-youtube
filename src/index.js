@@ -348,6 +348,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   return {
+    name: 'youtube',
     search,
     get: get, // eslint-disable-line object-shorthand
     import: async (ctx, action) => {
