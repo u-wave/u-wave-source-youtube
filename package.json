@@ -12,8 +12,10 @@
     "u-wave-source",
     "youtube"
   ],
+  "main": "./dist/u-wave-source-youtube.cjs.js",
+  "module": "./dist/u-wave-source-youtube.es.js",
   "engines": {
-    "node": ">= 4"
+    "node": ">= 8.9"
   },
   "dependencies": {
     "bluebird": "^3.3.5",
@@ -25,14 +27,15 @@
     "parse-iso-duration": "^1.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015-node4": "^2.1.0",
-    "babel-preset-stage-2": "^6.5.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-register": "^6.26.0",
     "eslint": "^4.6.0",
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-plugin-import": "^2.7.0",
     "nock": "^9.0.2",
+    "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-node-resolve": "^3.0.2",
     "tape": "^4.6.3"
   },
   "scripts": {
@@ -40,6 +43,6 @@
     "test": "npm run tape && npm run lint",
     "lint": "eslint src test",
     "tape": "tape -r ./test/init.js ./test/test.js",
-    "build": "babel --out-file index.js src/index.js"
+    "build": "rollup -c"
   }
 }
