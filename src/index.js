@@ -125,7 +125,7 @@ export default function youTubeSource(uw, opts = {}) {
   const searchOptions = opts.search || {};
 
   async function getPage(sourceIDs) {
-    const result = await youTubeGet({
+    const { data } = await youTubeGet({
       ...params,
       part: 'snippet,contentDetails,player',
       fields: `
@@ -144,7 +144,7 @@ export default function youTubeSource(uw, opts = {}) {
       maxHeight: 8192,
     });
 
-    return result.items.map(normalizeMedia).filter(item => item.duration > 0);
+    return data.items.map(normalizeMedia).filter(item => item.duration > 0);
   }
 
   async function get(sourceIDs) {
@@ -159,7 +159,7 @@ export default function youTubeSource(uw, opts = {}) {
     // only, because search results are very inconsistent with some types of
     // URLs.
     const id = getYouTubeID(query, { fuzzy: false });
-    const result = await youTubeSearch({
+    const { data } = await youTubeSearch({
       ...params,
       ...defaultSearchOptions,
       ...searchOptions,
@@ -170,13 +170,13 @@ export default function youTubeSource(uw, opts = {}) {
     const isVideo = item => item.id && item.id.videoId;
     const isBroadcast = item => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return get(result.items
+    return get(data.items
       .filter(item => isVideo(item) && !isBroadcast(item))
       .map(item => item.id.videoId));
   }
 
   async function getPlaylistPage(playlistID, page = null) {
-    const result = await youTubeGetPlaylistItems({
+    const { data } = await youTubeGetPlaylistItems({
       ...params,
       part: 'contentDetails',
       playlistId: playlistID,
@@ -185,8 +185,8 @@ export default function youTubeSource(uw, opts = {}) {
     });
 
     return {
-      nextPage: result.nextPageToken,
-      items: result.items,
+      nextPage: data.nextPageToken,
+      items: data.items,
     };
   }
 
@@ -218,14 +218,14 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function getPlaylistMeta(playlistID) {
-    const result = await youTubeGetPlaylists({
+    const { data } = await youTubeGetPlaylists({
       ...params,
       part: 'snippet',
       fields: 'items(id,snippet/title)',
       id: playlistID,
       maxResults: 1,
     });
-    return result.items[0];
+    return data.items[0];
   }
 
   async function getImportablePlaylist(url) {
@@ -272,9 +272,9 @@ export default function youTubeSource(uw, opts = {}) {
       }
     }
 
-    const result = await youTubeGetChannels(request);
+    const { data } = await youTubeGetChannels(request);
 
-    const channel = result.items[0];
+    const channel = data.items[0];
     return {
       id: channel.id,
       title: channel.snippet.title,
@@ -283,7 +283,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function getChannelPlaylistsPage(channelID, page = null) {
-    const result = await youTubeGetPlaylists({
+    const { data } = await youTubeGetPlaylists({
       ...params,
       ...getPlaylistsOptions,
       channelId: channelID,
@@ -291,8 +291,8 @@ export default function youTubeSource(uw, opts = {}) {
     });
 
     return {
-      nextPage: result.nextPageToken,
-      items: result.items,
+      nextPage: data.nextPageToken,
+      items: data.items,
     };
   }
 
@@ -316,7 +316,7 @@ export default function youTubeSource(uw, opts = {}) {
       ...params,
       ...getPlaylistsOptions,
       id: values(channel.playlists),
-    }).then(result => result.items);
+    }).then(({ data }) => data.items);
   }
 
   async function getPlaylistMetasForUser(url) {

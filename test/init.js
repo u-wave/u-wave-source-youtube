@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const Test = require('tape/lib/test');
-require('babel-register');
+require('babel-register')({
+  plugins: ['transform-es2015-modules-commonjs'],
+});
 
 /**
  * Monkeypatch support for returning Promises from Tape tests. Mostly just
