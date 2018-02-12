@@ -5,9 +5,9 @@ import getArtistTitle from 'get-artist-title';
 import chunk from 'chunk';
 import values from 'object-values';
 
-import googleapis from 'googleapis';
+import { google } from 'googleapis';
 
-const youTube = googleapis.youtube('v3');
+const youTube = google.youtube('v3');
 
 const youTubeSearch = Promise.promisify(youTube.search.list);
 const youTubeGet = Promise.promisify(youTube.videos.list);
