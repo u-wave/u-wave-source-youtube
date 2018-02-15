@@ -34,7 +34,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "nock": "^9.1.6",
-    "rollup": "^0.55.1",
+    "rollup": "^0.56.0",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-node-resolve": "^3.0.2",
     "tape": "^4.6.3"
