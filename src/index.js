@@ -1,19 +1,18 @@
-import Promise from 'bluebird';
 import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import chunk from 'chunk';
 import values from 'object-values';
-
+import { promisify } from 'util';
 import { google } from 'googleapis';
 
 const youTube = google.youtube('v3');
 
-const youTubeSearch = Promise.promisify(youTube.search.list);
-const youTubeGet = Promise.promisify(youTube.videos.list);
-const youTubeGetChannels = Promise.promisify(youTube.channels.list);
-const youTubeGetPlaylists = Promise.promisify(youTube.playlists.list);
-const youTubeGetPlaylistItems = Promise.promisify(youTube.playlistItems.list);
+const youTubeSearch = promisify(youTube.search.list);
+const youTubeGet = promisify(youTube.videos.list);
+const youTubeGetChannels = promisify(youTube.channels.list);
+const youTubeGetPlaylists = promisify(youTube.playlists.list);
+const youTubeGetPlaylistItems = promisify(youTube.playlistItems.list);
 
 function parseYouTubeDuration(duration) {
   return Math.round(parseIsoDuration(duration) / 1000);

@@ -18,7 +18,6 @@
     "node": ">= 8.9"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
     "chunk": "0.0.2",
     "get-artist-title": "^1.0.0",
     "get-youtube-id": "^1.0.0",
