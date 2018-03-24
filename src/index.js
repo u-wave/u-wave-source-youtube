@@ -2,7 +2,6 @@ import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import chunk from 'chunk';
-import values from 'object-values';
 import { promisify } from 'util';
 import { google } from 'googleapis';
 
@@ -314,7 +313,7 @@ export default function youTubeSource(uw, opts = {}) {
     return youTubeGetPlaylists({
       ...params,
       ...getPlaylistsOptions,
-      id: values(channel.playlists),
+      id: Object.values(channel.playlists),
     }).then(({ data }) => data.items);
   }
 
