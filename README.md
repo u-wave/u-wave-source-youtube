@@ -1,6 +1,8 @@
 üWave YouTube Media Source
 ==========================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/u-wave/u-wave-source-youtube.svg)](https://greenkeeper.io/)
+
 A üWave media source for searching through and importing videos from YouTube.
 
 ## Installation
