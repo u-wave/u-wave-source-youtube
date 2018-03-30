@@ -62,7 +62,7 @@ function normalizeMedia(video) {
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
 const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;
 
-const rxSimplePlaylistUrl = /youtube\.com\/playlist\?.*?list=([a-z0-9_-]+)/i;
+const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
 const rxPlaylistID = /^([a-z0-9_-]+)$/i;
 
 /**
