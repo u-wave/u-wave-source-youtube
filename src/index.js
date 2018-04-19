@@ -2,16 +2,9 @@ import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import chunk from 'chunk';
-import { promisify } from 'util';
 import { google } from 'googleapis';
 
 const youTube = google.youtube('v3');
-
-const youTubeSearch = promisify(youTube.search.list);
-const youTubeGet = promisify(youTube.videos.list);
-const youTubeGetChannels = promisify(youTube.channels.list);
-const youTubeGetPlaylists = promisify(youTube.playlists.list);
-const youTubeGetPlaylistItems = promisify(youTube.playlistItems.list);
 
 function parseYouTubeDuration(duration) {
   return Math.round(parseIsoDuration(duration) / 1000);
@@ -123,7 +116,7 @@ export default function youTubeSource(uw, opts = {}) {
   const searchOptions = opts.search || {};
 
   async function getPage(sourceIDs) {
-    const { data } = await youTubeGet({
+    const { data } = await youTube.videos.list({
       ...params,
       part: 'snippet,contentDetails,player',
       fields: `
@@ -157,7 +150,7 @@ export default function youTubeSource(uw, opts = {}) {
     // only, because search results are very inconsistent with some types of
     // URLs.
     const id = getYouTubeID(query, { fuzzy: false });
-    const { data } = await youTubeSearch({
+    const { data } = await youTube.search.list({
       ...params,
       ...defaultSearchOptions,
       ...searchOptions,
@@ -174,7 +167,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function getPlaylistPage(playlistID, page = null) {
-    const { data } = await youTubeGetPlaylistItems({
+    const { data } = await youTube.playlistItems.list({
       ...params,
       part: 'contentDetails',
       playlistId: playlistID,
@@ -216,7 +209,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function getPlaylistMeta(playlistID) {
-    const { data } = await youTubeGetPlaylists({
+    const { data } = await youTube.playlists.list({
       ...params,
       part: 'snippet',
       fields: 'items(id,snippet/title)',
@@ -270,7 +263,7 @@ export default function youTubeSource(uw, opts = {}) {
       }
     }
 
-    const { data } = await youTubeGetChannels(request);
+    const { data } = await youTube.channels.list(request);
 
     const channel = data.items[0];
     return {
@@ -281,7 +274,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   async function getChannelPlaylistsPage(channelID, page = null) {
-    const { data } = await youTubeGetPlaylists({
+    const { data } = await youTube.playlists.list({
       ...params,
       ...getPlaylistsOptions,
       channelId: channelID,
@@ -310,7 +303,7 @@ export default function youTubeSource(uw, opts = {}) {
   }
 
   function getSpecialChannelPlaylists(channel) {
-    return youTubeGetPlaylists({
+    return youTube.playlists.list({
       ...params,
       ...getPlaylistsOptions,
       id: Object.values(channel.playlists),
