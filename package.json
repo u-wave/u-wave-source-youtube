@@ -25,15 +25,17 @@
     "parse-iso-duration": "^1.0.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-register": "^6.26.0",
+    "@babel/core": "7.0.0-beta.51",
+    "@babel/plugin-syntax-object-rest-spread": "^7.0.0-beta.51",
+    "@babel/plugin-transform-modules-commonjs": "^7.0.0-beta.51",
+    "@babel/register": "7.0.0-beta.51",
+    "cross-env": "^5.2.0",
     "eslint": "^4.16.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "nock": "^9.1.6",
     "rollup": "^0.60.0",
-    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-babel": "^4.0.0-beta.5",
     "rollup-plugin-node-resolve": "^3.0.2",
     "tape": "^4.6.3"
   },
@@ -41,7 +43,7 @@
     "prepublish": "npm run build",
     "test": "npm run tape && npm run lint",
     "lint": "eslint src test",
-    "tape": "tape -r ./test/init.js ./test/test.js",
-    "build": "rollup -c"
+    "tape": "tape -r @babel/register -r ./test/init.js ./test/test.js",
+    "build": "cross-env BABEL_ENV=rollup rollup -c"
   }
 }
