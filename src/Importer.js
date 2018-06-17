@@ -120,6 +120,10 @@ export default class YouTubeImport {
     }
 
     const data = await this.client.listChannels(request);
+    if (data.items.length > 1) {
+      throw new Error('That channel could not be found. Please check that you provided the ' +
+        'full URL to the channel.');
+    }
 
     const channel = data.items[0];
     return {
