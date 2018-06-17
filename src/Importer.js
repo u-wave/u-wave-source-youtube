@@ -1,7 +1,4 @@
-import { google } from 'googleapis';
 import { getPlaylistID, getVideos, getBestThumbnail } from './util';
-
-const youTube = google.youtube('v3');
 
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
 const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;
@@ -24,13 +21,12 @@ const getPlaylistsOptions = {
 };
 
 export default class YouTubeImport {
-  constructor({ params }) {
-    this.params = params;
+  constructor(client) {
+    this.client = client;
   }
 
   async getPlaylistPage(playlistID, page = null) {
-    const { data } = await youTube.playlistItems.list({
-      ...this.params,
+    const data = await this.client.listPlaylistItems({
       part: 'contentDetails',
       playlistId: playlistID,
       maxResults: 50,
@@ -61,7 +57,7 @@ export default class YouTubeImport {
     }
 
     const ids = playlistItems.map(item => item.contentDetails.videoId);
-    const medias = await getVideos({ params: this.params }, ids);
+    const medias = await getVideos(this.client, ids);
 
     return medias.map(media => ({
       ...media,
@@ -71,8 +67,7 @@ export default class YouTubeImport {
   }
 
   async getPlaylistMeta(playlistID) {
-    const { data } = await youTube.playlists.list({
-      ...this.params,
+    const data = await this.client.listPlaylists({
       part: 'snippet',
       fields: 'items(id,snippet/title)',
       id: playlistID,
@@ -101,7 +96,6 @@ export default class YouTubeImport {
   async getChannelMeta(url) {
     let match = url.match(rxChannelUrl);
     const request = {
-      ...this.params,
       part: 'snippet,contentDetails',
       fields: `
         items(
@@ -125,7 +119,7 @@ export default class YouTubeImport {
       }
     }
 
-    const { data } = await youTube.channels.list(request);
+    const data = await this.client.listChannels(request);
 
     const channel = data.items[0];
     return {
@@ -136,8 +130,7 @@ export default class YouTubeImport {
   }
 
   async getChannelPlaylistsPage(channelID, page = null) {
-    const { data } = await youTube.playlists.list({
-      ...this.params,
+    const data = await this.client.listPlaylists({
       ...getPlaylistsOptions,
       channelId: channelID,
       pageToken: page,
@@ -164,12 +157,12 @@ export default class YouTubeImport {
     return playlists;
   }
 
-  getSpecialChannelPlaylists(channel) {
-    return youTube.playlists.list({
-      ...this.params,
+  async getSpecialChannelPlaylists(channel) {
+    const data = await this.client.listPlaylists({
       ...getPlaylistsOptions,
-      id: Object.values(channel.playlists),
-    }).then(({ data }) => data.items);
+      id: Object.values(channel.playlists).join(','),
+    });
+    return data.items;
   }
 
   async getPlaylistMetasForUser(url) {

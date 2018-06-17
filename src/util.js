@@ -1,10 +1,7 @@
-import { google } from 'googleapis';
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import getYouTubeID from 'get-youtube-id';
 import chunk from 'chunk';
-
-const youTube = google.youtube('v3');
 
 const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
 const rxPlaylistID = /^([a-z0-9_-]+)$/i;
@@ -77,10 +74,8 @@ export function normalizeMedia(video) {
   };
 }
 
-async function getVideosPage(ctx, sourceIDs) {
-  const { params } = ctx;
-  const { data } = await youTube.videos.list({
-    ...params,
+async function getVideosPage(client, sourceIDs) {
+  const data = await client.listVideos({
     part: 'snippet,contentDetails,player',
     fields: `
       items(
@@ -104,9 +99,9 @@ async function getVideosPage(ctx, sourceIDs) {
 /**
  * Fetch Video resources from the YouTube Data API.
  */
-export async function getVideos(ctx, sourceIDs) {
+export async function getVideos(client, sourceIDs) {
   const ids = sourceIDs.map(id => getYouTubeID(id) || id);
 
-  const pages = await Promise.all(chunk(ids, 50).map(page => getVideosPage(ctx, page)));
+  const pages = await Promise.all(chunk(ids, 50).map(page => getVideosPage(client, page)));
   return pages.reduce((result, page) => result.concat(page), []);
 }

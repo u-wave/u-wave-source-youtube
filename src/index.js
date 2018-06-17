@@ -1,9 +1,7 @@
 import getYouTubeID from 'get-youtube-id';
-import { google } from 'googleapis';
 import { getVideos } from './util';
+import YouTubeClient from './Client';
 import Importer from './Importer';
-
-const youTube = google.youtube('v3');
 
 const defaultSearchOptions = {
   part: 'id,snippet',
@@ -28,11 +26,12 @@ export default function youTubeSource(uw, opts = {}) {
 
   const params = opts.key ? { key: opts.key } : {};
   const searchOptions = opts.search || {};
+  const client = new YouTubeClient(params);
 
-  const importer = new Importer({ params });
+  const importer = new Importer(client);
 
   function get(sourceIDs) {
-    return getVideos({ params }, sourceIDs);
+    return getVideos(client, sourceIDs);
   }
 
   async function search(query, page = null) {
@@ -40,8 +39,7 @@ export default function youTubeSource(uw, opts = {}) {
     // only, because search results are very inconsistent with some types of
     // URLs.
     const id = getYouTubeID(query, { fuzzy: false });
-    const { data } = await youTube.search.list({
-      ...params,
+    const data = await client.search({
       ...defaultSearchOptions,
       ...searchOptions,
       q: id ? `"${id}"` : query,
