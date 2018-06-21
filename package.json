@@ -32,7 +32,7 @@
     "@babel/register": "7.0.0-beta.51",
     "cross-env": "^5.2.0",
     "eslint": "^4.16.0",
-    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.8.0",
     "nock": "^9.1.6",
     "rollup": "^0.61.0",
