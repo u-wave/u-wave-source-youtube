@@ -52,8 +52,8 @@ export default class YouTubeImport {
         playlistItems.push(...res.items);
       } while (page);
     } catch (e) {
-      throw new Error('That playlist could not be imported. If it\'s a private playlist, ' +
-        'change its visibility to Unlisted and try again.');
+      throw new Error('That playlist could not be imported. If it\'s a private playlist, '
+        + 'change its visibility to Unlisted and try again.');
     }
 
     const ids = playlistItems.map(item => item.contentDetails.videoId);
@@ -79,8 +79,8 @@ export default class YouTubeImport {
   async getImportablePlaylist(url) {
     const playlistID = getPlaylistID(url);
     if (!playlistID) {
-      throw new Error('Invalid playlist URL. Please provide a direct link to the playlist ' +
-        'you want to import.');
+      throw new Error('Invalid playlist URL. Please provide a direct link to the playlist '
+        + 'you want to import.');
     }
     const playlist = await this.getPlaylistMeta(playlistID);
     const items = await this.getPlaylistItems(playlistID);
@@ -114,15 +114,15 @@ export default class YouTubeImport {
       if (match) {
         request.forUsername = match[1]; // eslint-disable-line prefer-destructuring
       } else {
-        throw new Error('Invalid channel URL. Please provide a direct link to the channel or ' +
-          'user you want to import playlists from.');
+        throw new Error('Invalid channel URL. Please provide a direct link to the channel or '
+          + 'user you want to import playlists from.');
       }
     }
 
     const data = await this.client.listChannels(request);
     if (data.items.length > 1) {
-      throw new Error('That channel could not be found. Please check that you provided the ' +
-        'full URL to the channel.');
+      throw new Error('That channel could not be found. Please check that you provided the '
+        + 'full URL to the channel.');
     }
 
     const channel = data.items[0];

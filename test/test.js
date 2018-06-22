@@ -5,8 +5,7 @@ import youTubeSource from '../src';
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';
 
-const createSource = () =>
-  youTubeSource({}, { key: FAKE_KEY });
+const createSource = () => youTubeSource({}, { key: FAKE_KEY });
 
 const API_HOST = 'https://www.googleapis.com';
 

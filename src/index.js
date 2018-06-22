@@ -19,9 +19,9 @@ const defaultSearchOptions = {
 
 export default function youTubeSource(uw, opts = {}) {
   if (!opts.key) {
-    throw new TypeError('Expected a YouTube API key in "options.key". For information on how to ' +
-      'configure your YouTube API access, see ' +
-      'https://developers.google.com/youtube/v3/getting-started.');
+    throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
+      + 'configure your YouTube API access, see '
+      + 'https://developers.google.com/youtube/v3/getting-started.');
   }
 
   const params = opts.key ? { key: opts.key } : {};
