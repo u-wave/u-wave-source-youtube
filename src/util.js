@@ -33,9 +33,11 @@ export function getBestThumbnail(thumbnails) {
   if (thumbnails) {
     if (thumbnails.high) {
       return thumbnails.high.url;
-    } else if (thumbnails.medium) {
+    }
+    if (thumbnails.medium) {
       return thumbnails.medium.url;
-    } else if (thumbnails.default) {
+    }
+    if (thumbnails.default) {
       return thumbnails.default.url;
     }
   }
