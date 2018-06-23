@@ -31,7 +31,7 @@
     "@babel/plugin-transform-modules-commonjs": "7.0.0-rc.1",
     "@babel/register": "7.0.0-rc.1",
     "cross-env": "^5.2.0",
-    "eslint": "^4.16.0",
+    "eslint": "^5.0.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.8.0",
     "nock": "^9.1.6",
