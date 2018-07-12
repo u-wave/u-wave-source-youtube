@@ -41,7 +41,7 @@
     "tape": "^4.6.3"
   },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "test": "npm run tape && npm run lint",
     "lint": "eslint src test",
     "tape": "tape -r @babel/register -r ./test/init.js ./test/test.js",
