@@ -3,6 +3,59 @@ import { getVideos } from './util';
 import YouTubeClient from './Client';
 import Importer from './Importer';
 
+const schema = {
+  type: 'object',
+  properties: {
+    key: {
+      type: 'string',
+      title: 'YouTube API Key',
+      description: 'For information on how to configure your YouTube API access, '
+        + 'see https://developers.google.com/youtube/v3/getting-started.',
+    },
+    search: {
+      type: 'object',
+      properties: {
+        part: {
+          type: 'string',
+          default: 'id,snippet',
+        },
+        fields: {
+          type: 'string',
+          default: `
+            items(id/videoId, snippet/liveBroadcastContent),
+            pageInfo,
+            nextPageToken,
+            prevPageToken
+          `.replace(/\s+/g, ''),
+        },
+        type: {
+          type: 'string',
+          default: 'video',
+        },
+        safeSearch: {
+          type: 'string',
+          default: 'none',
+          enum: ['none', 'all'],
+        },
+        maxResults: {
+          type: 'number',
+          title: 'Max Results',
+          description: 'Maximum amount of search results to return.',
+          minimum: 0,
+          maximum: 50,
+          default: 50,
+        },
+        videoSyndicated: {
+          type: 'boolean',
+          default: true,
+        },
+      },
+      required: ['part', 'type'],
+    },
+  },
+  required: ['key'],
+};
+
 const defaultSearchOptions = {
   part: 'id,snippet',
   fields: `
@@ -61,6 +114,7 @@ export default function youTubeSource(uw, opts = {}) {
 
   return {
     name: 'youtube',
+    schema,
     search,
     get: get, // eslint-disable-line object-shorthand
     import: async (ctx, action) => {
