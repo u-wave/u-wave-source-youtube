@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.0.0-rc.1",
-    "@babel/plugin-syntax-object-rest-spread": "7.0.0-rc.1",
+    "@babel/plugin-syntax-object-rest-spread": "7.0.0-rc.3",
     "@babel/plugin-transform-modules-commonjs": "7.0.0-rc.1",
     "@babel/register": "7.0.0-rc.1",
     "cross-env": "^5.2.0",
