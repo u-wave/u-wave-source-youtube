@@ -1,3 +1,4 @@
+import { BadRequest, NotFound } from 'http-errors';
 import { getPlaylistID, getVideos, getBestThumbnail } from './util';
 
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
@@ -52,7 +53,7 @@ export default class YouTubeImport {
         playlistItems.push(...res.items);
       } while (page);
     } catch (e) {
-      throw new Error('That playlist could not be imported. If it\'s a private playlist, '
+      throw new BadRequest('That playlist could not be imported. If it\'s a private playlist, '
         + 'change its visibility to Unlisted and try again.');
     }
 
@@ -79,7 +80,7 @@ export default class YouTubeImport {
   async getImportablePlaylist(url) {
     const playlistID = getPlaylistID(url);
     if (!playlistID) {
-      throw new Error('Invalid playlist URL. Please provide a direct link to the playlist '
+      throw new BadRequest('Invalid playlist URL. Please provide a direct link to the playlist '
         + 'you want to import.');
     }
     const playlist = await this.getPlaylistMeta(playlistID);
@@ -114,14 +115,14 @@ export default class YouTubeImport {
       if (match) {
         request.forUsername = match[1]; // eslint-disable-line prefer-destructuring
       } else {
-        throw new Error('Invalid channel URL. Please provide a direct link to the channel or '
+        throw new BadRequest('Invalid channel URL. Please provide a direct link to the channel or '
           + 'user you want to import playlists from.');
       }
     }
 
     const data = await this.client.listChannels(request);
     if (data.items.length > 1) {
-      throw new Error('That channel could not be found. Please check that you provided the '
+      throw new NotFound('That channel could not be found. Please check that you provided the '
         + 'full URL to the channel.');
     }
 

@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import createError from 'http-errors';
 import qsStringify from 'qs-stringify';
 
 /**
@@ -15,7 +16,7 @@ export default class YouTubeClient {
     const response = await fetch(`${this.baseUrl}/${resource}?${query}`);
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error.message);
+      throw createError(response.statusCode, data.error.message);
     }
     return data;
   }
