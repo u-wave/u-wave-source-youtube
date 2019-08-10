@@ -57,10 +57,10 @@ export default class YouTubeImport {
         + 'change its visibility to Unlisted and try again.');
     }
 
-    const ids = playlistItems.map(item => item.contentDetails.videoId);
+    const ids = playlistItems.map((item) => item.contentDetails.videoId);
     const medias = await getVideos(this.client, ids);
 
-    return medias.map(media => ({
+    return medias.map((media) => ({
       ...media,
       start: 0,
       end: media.duration,
@@ -182,7 +182,7 @@ export default class YouTubeImport {
 
     return {
       channel: { id: channel.id, title: channel.title },
-      playlists: allPlaylists.map(item => ({
+      playlists: allPlaylists.map((item) => ({
         sourceID: item.id,
         sourceChannel: item.snippet.channelTitle,
         name: item.snippet.title,
