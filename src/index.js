@@ -1,3 +1,4 @@
+import { BadRequest } from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { getVideos } from './util';
 import YouTubeClient from './Client';
@@ -76,7 +77,7 @@ export default function youTubeSource(uw, opts = {}) {
         return doImport(ctx, action.name, action.id);
       }
 
-      throw new TypeError(`Unknown action "${action}"`);
+      throw new BadRequest(`Unknown action "${action}"`);
     },
   };
 }
