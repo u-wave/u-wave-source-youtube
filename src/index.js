@@ -47,12 +47,12 @@ export default function youTubeSource(uw, opts = {}) {
       pageToken: page,
     });
 
-    const isVideo = item => item.id && item.id.videoId;
-    const isBroadcast = item => item.snippet && item.snippet.liveBroadcastContent !== 'none';
+    const isVideo = (item) => item.id && item.id.videoId;
+    const isBroadcast = (item) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
     return get(data.items
-      .filter(item => isVideo(item) && !isBroadcast(item))
-      .map(item => item.id.videoId));
+      .filter((item) => isVideo(item) && !isBroadcast(item))
+      .map((item) => item.id.videoId));
   }
 
   async function doImport(ctx, name, playlistID) {

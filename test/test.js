@@ -9,7 +9,7 @@ const createSource = () => youTubeSource({}, { key: FAKE_KEY });
 
 const API_HOST = 'https://www.googleapis.com';
 
-const fixture = name => path.join(__dirname, 'responses', `${name}.json`);
+const fixture = (name) => path.join(__dirname, 'responses', `${name}.json`);
 
 test('providing a key is required', (t) => {
   t.throws(

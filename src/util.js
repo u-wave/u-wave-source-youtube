@@ -95,15 +95,15 @@ async function getVideosPage(client, sourceIDs) {
     maxHeight: 8192,
   });
 
-  return data.items.map(normalizeMedia).filter(item => item.duration > 0);
+  return data.items.map(normalizeMedia).filter((item) => item.duration > 0);
 }
 
 /**
  * Fetch Video resources from the YouTube Data API.
  */
 export async function getVideos(client, sourceIDs) {
-  const ids = sourceIDs.map(id => getYouTubeID(id) || id);
+  const ids = sourceIDs.map((id) => getYouTubeID(id) || id);
 
-  const pages = await Promise.all(chunk(ids, 50).map(page => getVideosPage(client, page)));
+  const pages = await Promise.all(chunk(ids, 50).map((page) => getVideosPage(client, page)));
   return pages.reduce((result, page) => result.concat(page), []);
 }

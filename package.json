@@ -32,12 +32,12 @@
     "@babel/plugin-transform-modules-commonjs": "^7.0.0",
     "@babel/register": "^7.0.0",
     "cross-env": "^5.2.0",
-    "eslint": "^5.4.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint": "^6.0.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "is-builtin-module": "^3.0.0",
     "nock": "^10.0.0",
-    "rollup": "^1.0.0",
+    "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.0.2",
     "rollup-plugin-node-resolve": "^5.0.0",
     "tape": "^4.6.3"
@@ -45,7 +45,7 @@
   "scripts": {
     "prepare": "npm run build",
     "test": "npm run tape && npm run lint",
-    "lint": "eslint src test",
+    "lint": "eslint .",
     "tape": "tape -r @babel/register -r ./test/init.js ./test/test.js",
     "build": "cross-env BABEL_ENV=rollup rollup -c"
   }
