@@ -15,7 +15,7 @@
   "main": "./dist/u-wave-source-youtube.cjs.js",
   "module": "./dist/u-wave-source-youtube.es.js",
   "engines": {
-    "node": ">= 8.9"
+    "node": ">= 10"
   },
   "dependencies": {
     "chunk": "0.0.2",
@@ -36,7 +36,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "is-builtin-module": "^3.0.0",
-    "nock": "^10.0.0",
+    "nock": "^11.3.4",
     "rollup": "^1.19.4",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-node-resolve": "^5.0.0",
