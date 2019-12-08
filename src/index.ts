@@ -1,7 +1,7 @@
 import { BadRequest } from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { getVideos } from './util';
-import YouTubeClient from './Client';
+import YouTubeClient, { SearchResultResource } from './Client';
 import Importer from './Importer';
 
 const defaultSearchOptions = {
@@ -18,24 +18,29 @@ const defaultSearchOptions = {
   videoSyndicated: true,
 };
 
-export default function youTubeSource(uw, opts = {}) {
-  if (!opts.key) {
+export interface YouTubeOptions {
+  key: string;
+  search?: object;
+};
+
+export default function youTubeSource(uw: any, opts: YouTubeOptions) {
+  if (!opts || !opts.key) {
     throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
       + 'configure your YouTube API access, see '
       + 'https://developers.google.com/youtube/v3/getting-started.');
   }
 
-  const params = opts.key ? { key: opts.key } : {};
+  const params = { key: opts.key };
   const searchOptions = opts.search || {};
   const client = new YouTubeClient(params);
 
   const importer = new Importer(client);
 
-  function get(sourceIDs) {
+  function get(sourceIDs: string[]) {
     return getVideos(client, sourceIDs);
   }
 
-  async function search(query, page = null) {
+  async function search(query: string, page?: string): Promise<unknown> {
     // When searching for a video URL, we want to search for the video ID
     // only, because search results are very inconsistent with some types of
     // URLs.
@@ -47,15 +52,15 @@ export default function youTubeSource(uw, opts = {}) {
       pageToken: page,
     });
 
-    const isVideo = (item) => item.id && item.id.videoId;
-    const isBroadcast = (item) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
+    const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
+    const isBroadcast = (item: SearchResultResource) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
     return get(data.items
-      .filter((item) => isVideo(item) && !isBroadcast(item))
-      .map((item) => item.id.videoId));
+      .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
+      .map((item: SearchResultResource) => item.id.videoId));
   }
 
-  async function doImport(ctx, name, playlistID) {
+  async function doImport(ctx: any, name: string, playlistID: string) {
     const items = await importer.getPlaylistItems(playlistID);
     return ctx.createPlaylist(name, items);
   }
@@ -64,7 +69,7 @@ export default function youTubeSource(uw, opts = {}) {
     name: 'youtube',
     search,
     get: get, // eslint-disable-line object-shorthand
-    import: async (ctx, action) => {
+    import: async (ctx: any, action: ChannelAction | PlaylistAction | ImportAction) => {
       if (action.action === 'channel') {
         return importer.getPlaylistMetasForUser(action.url);
       }
@@ -81,3 +86,7 @@ export default function youTubeSource(uw, opts = {}) {
     },
   };
 }
+
+type ChannelAction = { action: 'channel', url: string };
+type PlaylistAction = { action: 'playlist', url: string };
+type ImportAction = { action: 'importplaylist', name: string, id: string };

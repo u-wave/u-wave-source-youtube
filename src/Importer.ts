@@ -1,5 +1,6 @@
 import { BadRequest, NotFound } from 'http-errors';
 import { getPlaylistID, getVideos, getBestThumbnail } from './util';
+import Client, { ListChannelsOptions, PlaylistResource, PlaylistItemResource } from './Client';
 
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
 const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;
@@ -21,12 +22,35 @@ const getPlaylistsOptions = {
   maxResults: 50,
 };
 
+type ChannelMeta = {
+  id: string,
+  title: string,
+  playlists: {
+    favorites: string,
+    uploads: string,
+  },
+};
+
+type PlaylistMeta = {
+  sourceID: string,
+  sourceChannel: string,
+  name: string,
+  description: string,
+  size: number,
+  thumbnail: string,
+};
+
+type PlaylistsPage = { nextPage: string, items: PlaylistResource[] };
+type PlaylistItemsPage = { nextPage: string, items: PlaylistItemResource[] };
+
 export default class YouTubeImport {
-  constructor(client) {
+  private client: Client;
+
+  constructor(client: Client) {
     this.client = client;
   }
 
-  async getPlaylistPage(playlistID, page = null) {
+  async getPlaylistItemsPage(playlistID: string, page?: string): Promise<PlaylistItemsPage> {
     const data = await this.client.listPlaylistItems({
       part: 'contentDetails',
       playlistId: playlistID,
@@ -40,15 +64,15 @@ export default class YouTubeImport {
     };
   }
 
-  async getPlaylistItems(playlistID) {
-    let page = null;
+  async getPlaylistItems(playlistID: string): Promise<unknown[]> {
+    let page;
     const playlistItems = [];
     try {
       do {
         // This `await` is OK since we need to fetch this page to find out how
         // to fetch the next.
         // eslint-disable-next-line no-await-in-loop
-        const res = await this.getPlaylistPage(playlistID, page);
+        const res: PlaylistItemsPage = await this.getPlaylistItemsPage(playlistID, page);
         page = res.nextPage;
         playlistItems.push(...res.items);
       } while (page);
@@ -67,7 +91,7 @@ export default class YouTubeImport {
     }));
   }
 
-  async getPlaylistMeta(playlistID) {
+  async getPlaylistMeta(playlistID: string): Promise<PlaylistResource> {
     const data = await this.client.listPlaylists({
       part: 'snippet',
       fields: 'items(id,snippet/title)',
@@ -77,7 +101,13 @@ export default class YouTubeImport {
     return data.items[0];
   }
 
-  async getImportablePlaylist(url) {
+  async getImportablePlaylist(url: string): Promise<{
+    playlist: {
+      sourceID: string,
+      name: string,
+    },
+    items: unknown[],
+  }> {
     const playlistID = getPlaylistID(url);
     if (!playlistID) {
       throw new BadRequest('Invalid playlist URL. Please provide a direct link to the playlist '
@@ -94,9 +124,9 @@ export default class YouTubeImport {
     };
   }
 
-  async getChannelMeta(url) {
+  async getChannelMeta(url: string): Promise<ChannelMeta> {
     let match = url.match(rxChannelUrl);
-    const request = {
+    const baseOptions = {
       part: 'snippet,contentDetails',
       fields: `
         items(
@@ -108,19 +138,23 @@ export default class YouTubeImport {
       `.replace(/\s+/g, ''),
       maxResults: 1,
     };
+    let idOptions;
     if (match) {
-      request.id = match[1]; // eslint-disable-line prefer-destructuring
+      idOptions = { id: match[1] };
     } else {
       match = url.match(rxUserUrl);
       if (match) {
-        request.forUsername = match[1]; // eslint-disable-line prefer-destructuring
+        idOptions = { forUsername: match[1] };
       } else {
         throw new BadRequest('Invalid channel URL. Please provide a direct link to the channel or '
           + 'user you want to import playlists from.');
       }
     }
 
-    const data = await this.client.listChannels(request);
+    const data = await this.client.listChannels({
+      ...baseOptions,
+      ...idOptions,
+    });
     if (data.items.length > 1) {
       throw new NotFound('That channel could not be found. Please check that you provided the '
         + 'full URL to the channel.');
@@ -134,7 +168,7 @@ export default class YouTubeImport {
     };
   }
 
-  async getChannelPlaylistsPage(channelID, page = null) {
+  async getChannelPlaylistsPage(channelID: string, page?: string): Promise<PlaylistsPage> {
     const data = await this.client.listPlaylists({
       ...getPlaylistsOptions,
       channelId: channelID,
@@ -147,14 +181,14 @@ export default class YouTubeImport {
     };
   }
 
-  async getChannelPlaylists(channelID) {
+  async getChannelPlaylists(channelID: string): Promise<PlaylistResource[]> {
     const playlists = [];
     let page;
     do {
       // This `await` is OK since we need to fetch this page to find out how
       // to fetch the next.
       // eslint-disable-next-line no-await-in-loop
-      const res = await this.getChannelPlaylistsPage(channelID, page);
+      const res: PlaylistsPage = await this.getChannelPlaylistsPage(channelID, page);
       page = res.nextPage;
       playlists.push(...res.items);
     } while (page);
@@ -162,7 +196,7 @@ export default class YouTubeImport {
     return playlists;
   }
 
-  async getSpecialChannelPlaylists(channel) {
+  async getSpecialChannelPlaylists(channel: ChannelMeta): Promise<PlaylistResource[]> {
     const data = await this.client.listPlaylists({
       ...getPlaylistsOptions,
       id: Object.values(channel.playlists).join(','),
@@ -170,7 +204,7 @@ export default class YouTubeImport {
     return data.items;
   }
 
-  async getPlaylistMetasForUser(url) {
+  async getPlaylistMetasForUser(url: string): Promise<{ channel: { id: string, title: string }, playlists: PlaylistMeta[] }> {
     const channel = await this.getChannelMeta(url);
 
     const specials = this.getSpecialChannelPlaylists(channel);
