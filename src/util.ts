@@ -71,7 +71,7 @@ export interface UwMedia {
 export function normalizeMedia(video: VideoResource): UwMedia {
   const [artist, title] = getArtistTitle(video.snippet.title, {
     defaultArtist: video.snippet.channelTitle,
-  });
+  })!;
 
   return {
     sourceID: video.id,
