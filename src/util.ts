@@ -77,7 +77,7 @@ export function normalizeMedia(video: VideoResource): UwMedia {
     sourceID: video.id,
     // TODO Fix the detection in get-artist-title so that it doesn't split the
     // title into parts with only fluff.
-    artist: artist || '[unknown]',
+    artist: artist ? artist.replace(/ - Topic$/, '') : '[unknown]',
     title: title || '[unknown]',
     duration: parseYouTubeDuration(video.contentDetails.duration),
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
