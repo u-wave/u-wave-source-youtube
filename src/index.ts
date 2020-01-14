@@ -1,10 +1,11 @@
 import { BadRequest } from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
+import { JSONSchema } from 'json-schema-typed';
 import { getVideos } from './util';
 import YouTubeClient, { SearchResultResource } from './Client';
 import Importer from './Importer';
 
-const schema = {
+const schema: JSONSchema = {
   type: 'object',
   properties: {
     key: {

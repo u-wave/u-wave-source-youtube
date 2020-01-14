@@ -31,6 +31,7 @@
     "@types/http-errors": "^1.6.3",
     "@types/node-fetch": "^2.5.4",
     "is-builtin-module": "^3.0.0",
+    "json-schema-typed": "^7.0.3",
     "nock": "^11.3.4",
     "rollup": "^1.19.4",
     "rollup-plugin-node-resolve": "^5.0.0",
