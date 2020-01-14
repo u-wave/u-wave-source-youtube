@@ -15,36 +15,33 @@
   "main": "./dist/u-wave-source-youtube.cjs.js",
   "module": "./dist/u-wave-source-youtube.es.js",
   "engines": {
-    "node": ">= 8.9"
+    "node": ">= 10"
   },
   "dependencies": {
     "chunk": "0.0.2",
-    "get-artist-title": "^1.0.0",
+    "get-artist-title": "^1.2.0",
     "get-youtube-id": "^1.0.0",
-    "node-fetch": "^2.1.2",
-    "parse-iso-duration": "^1.0.0",
-    "qs-stringify": "^1.1.0"
+    "http-errors": "^1.7.3",
+    "node-fetch": "^2.6.0",
+    "parse-iso-duration": "^1.1.0",
+    "qs-stringify": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.0.0-beta.52",
-    "@babel/plugin-syntax-object-rest-spread": "7.0.0-beta.52",
-    "@babel/plugin-transform-modules-commonjs": "7.0.0-beta.52",
-    "@babel/register": "7.0.0-beta.52",
-    "cross-env": "^5.2.0",
-    "eslint": "^4.16.0",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.8.0",
-    "nock": "^9.1.6",
-    "rollup": "^0.62.0",
-    "rollup-plugin-babel": "^4.0.0-beta.5",
-    "rollup-plugin-node-resolve": "^3.0.2",
-    "tape": "^4.6.3"
+    "@types/chunk": "0.0.0",
+    "@types/http-errors": "^1.6.3",
+    "@types/node-fetch": "^2.5.4",
+    "is-builtin-module": "^3.0.0",
+    "nock": "^11.3.4",
+    "rollup": "^1.19.4",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "tape": "^4.11.0",
+    "typescript": "^3.7.3"
   },
   "scripts": {
     "prepare": "npm run build",
-    "test": "npm run tape && npm run lint",
-    "lint": "eslint src test",
-    "tape": "tape -r @babel/register -r ./test/init.js ./test/test.js",
-    "build": "cross-env BABEL_ENV=rollup rollup -c"
+    "test": "npm run build && npm run tape",
+    "tape": "tape -r ./test/init.js ./test/test.js",
+    "build": "rollup -c"
   }
 }

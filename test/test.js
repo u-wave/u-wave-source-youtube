@@ -1,7 +1,7 @@
-import test from 'tape';
-import nock from 'nock';
-import path from 'path';
-import youTubeSource from '../src';
+const test = require('tape');
+const nock = require('nock');
+const path = require('path');
+const youTubeSource = require('../').default;
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';
 
@@ -9,7 +9,7 @@ const createSource = () => youTubeSource({}, { key: FAKE_KEY });
 
 const API_HOST = 'https://www.googleapis.com';
 
-const fixture = name => path.join(__dirname, 'responses', `${name}.json`);
+const fixture = (name) => path.join(__dirname, 'responses', `${name}.json`);
 
 test('providing a key is required', (t) => {
   t.throws(
