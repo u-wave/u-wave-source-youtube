@@ -1,10 +1,10 @@
 import { BadRequest } from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { getVideos } from './util';
-import YouTubeClient, { SearchResultResource } from './Client';
+import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
-const defaultSearchOptions = {
+const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'>> = {
   part: 'id,snippet',
   fields: `
     items(id/videoId, snippet/liveBroadcastContent),
@@ -15,12 +15,12 @@ const defaultSearchOptions = {
   type: 'video',
   maxResults: 50,
   safeSearch: 'none',
-  videoSyndicated: true,
+  videoSyndicated: 'true',
 };
 
 export interface YouTubeOptions {
   key: string;
-  search?: object;
+  search?: Partial<Pick<SearchOptions, Exclude<keyof SearchOptions, 'part' | 'fields' | 'type'>>>;
 };
 
 export default function youTubeSource(uw: any, opts: YouTubeOptions) {

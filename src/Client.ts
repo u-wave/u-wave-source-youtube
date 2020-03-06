@@ -457,7 +457,7 @@ export type SearchOptions = RequestOptions & {
   q: string;
   type: string;
   safeSearch?: string;
-  videoSyndicated?: boolean;
+  videoSyndicated?: 'true' | 'any';
 }
 export type ListVideosOptions = RequestOptions & {
   id: string,
