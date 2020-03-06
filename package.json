@@ -12,8 +12,10 @@
     "u-wave-source",
     "youtube"
   ],
-  "main": "./dist/u-wave-source-youtube.cjs.js",
-  "module": "./dist/u-wave-source-youtube.es.js",
+  "main": "./dist/u-wave-source-youtube.cjs",
+  "exports": {
+    ".": "./dist/u-wave-source-youtube.mjs"
+  },
   "engines": {
     "node": ">= 10"
   },
@@ -36,6 +38,7 @@
     "rollup": "2.0.0-2",
     "rollup-plugin-typescript2": "^0.26.0",
     "tape": "^4.11.0",
+    "tslib": "^1.11.1",
     "typescript": "^3.7.3"
   },
   "scripts": {

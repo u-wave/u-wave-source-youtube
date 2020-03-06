@@ -1,8 +1,10 @@
-import { BadRequest } from 'http-errors';
+import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { getVideos } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
+
+const { BadRequest } = httpErrors;
 
 const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'>> = {
   part: 'id,snippet',
