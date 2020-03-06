@@ -27,13 +27,13 @@
     "qs-stringify": "^1.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.1",
     "@types/chunk": "0.0.0",
     "@types/http-errors": "^1.6.3",
     "@types/node-fetch": "^2.5.4",
     "is-builtin-module": "^3.0.0",
     "nock": "^12.0.0",
-    "rollup": "^1.19.4",
-    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup": "2.0.0-2",
     "rollup-plugin-typescript2": "^0.26.0",
     "tape": "^4.11.0",
     "typescript": "^3.7.3"
