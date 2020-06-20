@@ -21,11 +21,23 @@ const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'
 };
 
 export interface YouTubeOptions {
+  /**
+   * Your YouTube API key.
+   *
+   * For information on how to configure your YouTube API access, see https://developers.google.com/youtube/v3/getting-started.
+   */
   key: string;
+
+  /**
+   * Options for the search endpoint.
+   */
   search?: Partial<Pick<SearchOptions, Exclude<keyof SearchOptions, 'part' | 'fields' | 'type'>>>;
 };
 
-export default function youTubeSource(uw: any, opts: YouTubeOptions) {
+/**
+ * The YouTube media source. Pass this function to `uw.source()`.
+ */
+export default function youTubeSource(uw: unknown, opts: YouTubeOptions) {
   if (!opts || !opts.key) {
     throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
       + 'configure your YouTube API access, see '
