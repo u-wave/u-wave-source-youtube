@@ -2,7 +2,10 @@
   "compilerOptions": {
     "module": "es2015",
     "target": "es2018",
+    "moduleResolution": "Node",
+    "newLine": "lf",
     "strict": true,
+    "declaration": true,
     "allowSyntheticDefaultImports": true
   },
   "include": [

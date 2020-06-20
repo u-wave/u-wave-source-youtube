@@ -1,6 +1,8 @@
-import { BadRequest, NotFound } from 'http-errors';
+import httpErrors from 'http-errors';
 import { getPlaylistID, getVideos, getBestThumbnail } from './util';
 import Client, { ListChannelsOptions, PlaylistResource, PlaylistItemResource } from './Client';
+
+const { BadRequest, NotFound } = httpErrors;
 
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
 const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;

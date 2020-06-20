@@ -2,10 +2,19 @@ import fetch from 'node-fetch';
 import createError from 'http-errors';
 import qsStringify from 'qs-stringify';
 
+/**
+ * General interface for query parameters to the YouTube API.
+ */
 export interface Params {
   [name: string]: string | number | undefined;
 };
 
+/**
+ * YouTube response format for endpoints that return a list of things.
+ *
+ * @typeParam Kind  The name of the kind of resource that this endpoint returns.
+ * @typeParam Item  An interface describing the shape of the resources that this endpoint returns.
+ */
 export interface ListResponse<Kind extends string, Item> {
   kind: Kind;
   etag: string;
@@ -19,16 +28,26 @@ export interface ListResponse<Kind extends string, Item> {
   items: Item[];
 };
 
+/**
+ * Describes a thumbnail for a video or playlist.
+ */
 export type Thumbnail = {
   url: string,
   width: number,
   height: number,
 };
+/**
+ * Several named thumbnails.
+ */
 export type Thumbnails = {
   [key: string]: Thumbnail,
 };
 
-// https://developers.google.com/youtube/v3/docs/search#resource
+/**
+ * The resource type returned from search requests.
+ *
+ * https://developers.google.com/youtube/v3/docs/search#resource
+ */
 export interface SearchResultResource {
   kind: "youtube#SearchResultResource";
   etag: string;
@@ -49,7 +68,11 @@ export interface SearchResultResource {
   };
 };
 
-// https://developers.google.com/youtube/v3/docs/videos#resource
+/**
+ * The resource type returned from video listing requests.
+ *
+ * https://developers.google.com/youtube/v3/docs/videos#resource
+ */
 export interface VideoResource {
   kind: 'youtube#video',
   etag: string,
@@ -250,7 +273,11 @@ export interface VideoResource {
   }
 };
 
-// https://developers.google.com/youtube/v3/docs/playlistItems#resource
+/**
+ * The resource type returned from playlist item listing requests.
+ *
+ * https://developers.google.com/youtube/v3/docs/playlistItems#resource
+ */
 export interface PlaylistItemResource {
   kind: "youtube#playlistItem",
   etag: string,
@@ -279,7 +306,11 @@ export interface PlaylistItemResource {
   status: { privacyStatus: string },
 };
 
-// https://developers.google.com/youtube/v3/docs/playlists#resource
+/**
+ * The resource type returned from playlist listing requests.
+ *
+ * https://developers.google.com/youtube/v3/docs/playlists#resource
+ */
 export interface PlaylistResource {
   kind: "youtube#playlist",
   etag: string,
@@ -309,7 +340,11 @@ export interface PlaylistResource {
   },
 };
 
-// https://developers.google.com/youtube/v3/docs/channels#resource
+/**
+ * The resource type returned from channel listing requests.
+ *
+ * https://developers.google.com/youtube/v3/docs/channels#resource
+ */
 export interface ChannelResource {
   kind: "youtube#channel",
   etag: string,
@@ -457,7 +492,7 @@ export type SearchOptions = RequestOptions & {
   q: string;
   type: string;
   safeSearch?: string;
-  videoSyndicated?: boolean;
+  videoSyndicated?: 'true' | 'any';
 }
 export type ListVideosOptions = RequestOptions & {
   id: string,
@@ -477,11 +512,14 @@ export default class YouTubeClient {
   private params: Params;
   private baseUrl: string = 'https://www.googleapis.com/youtube/v3';
 
+  /**
+   * @param params  Default query parameters for YouTube API requests—typically for API keys.
+   */
   constructor(params: Params) {
     this.params = params;
   }
 
-  async get(resource: string, options: Params): Promise<object> {
+  private async get(resource: string, options: Params): Promise<object> {
     const query = qsStringify({ ...this.params, ...options });
     const response = await fetch(`${this.baseUrl}/${resource}?${query}`);
     const data = await response.json();
