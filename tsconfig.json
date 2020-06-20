@@ -4,6 +4,7 @@
     "target": "es2018",
     "newLine": "lf",
     "strict": true,
+    "declaration": true,
     "allowSyntheticDefaultImports": true
   },
   "include": [

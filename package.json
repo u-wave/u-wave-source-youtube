@@ -52,5 +52,6 @@
     "prepare": "npm run build",
     "tape": "tape -r ./test/init.js ./test/test.js",
     "test": "npm run build && npm run tape"
-  }
+  },
+  "typings": "./dist/index.d.ts"
 }
