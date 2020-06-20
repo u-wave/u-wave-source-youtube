@@ -1,24 +1,11 @@
 {
   "name": "u-wave-source-youtube",
-  "version": "1.3.0",
   "description": "YouTube media source for üWave.",
-  "license": "MIT",
-  "repository": "u-wave/u-wave-source-youtube",
+  "version": "1.3.0",
   "author": "Sooyou",
   "contributors": [
     "Renée Kooi <renee@kooi.me>"
   ],
-  "keywords": [
-    "u-wave-source",
-    "youtube"
-  ],
-  "main": "./dist/u-wave-source-youtube.cjs",
-  "exports": {
-    ".": "./dist/u-wave-source-youtube.mjs"
-  },
-  "engines": {
-    "node": ">= 10"
-  },
   "dependencies": {
     "chunk": "0.0.2",
     "get-artist-title": "^1.2.0",
@@ -41,10 +28,29 @@
     "tslib": "^2.0.0",
     "typescript": "^3.9.2"
   },
+  "engines": {
+    "node": ">= 10"
+  },
+  "exports": {
+    ".": [
+      {
+        "import": "./dist/u-wave-source-youtube.mjs",
+        "default": "./dist/u-wave-source-youtube.cjs"
+      },
+      "./dist/u-wave-source-youtube.cjs"
+    ]
+  },
+  "keywords": [
+    "u-wave-source",
+    "youtube"
+  ],
+  "license": "MIT",
+  "main": "./dist/u-wave-source-youtube.cjs",
+  "repository": "u-wave/u-wave-source-youtube",
   "scripts": {
+    "build": "rollup -c",
     "prepare": "npm run build",
-    "test": "npm run build && npm run tape",
     "tape": "tape -r ./test/init.js ./test/test.js",
-    "build": "rollup -c"
+    "test": "npm run build && npm run tape"
   }
 }
