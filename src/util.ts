@@ -45,7 +45,7 @@ export function getBestThumbnail(thumbnails: Thumbnails): string {
   return '';
 }
 
-function getBlockedCountryCodes(contentDetails: VideoResource["contentDetails"]): string[] {
+function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails']): string[] {
   if (contentDetails.regionRestriction) {
     return contentDetails.regionRestriction.blocked || [];
   }
@@ -63,7 +63,7 @@ export interface UwMedia {
     embedHeight: number | null,
     blockedIn: string[],
   };
-};
+}
 
 /**
  * Convert a YouTube Video resource to a üWave media object.

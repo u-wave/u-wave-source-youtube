@@ -1,6 +1,6 @@
 import httpErrors from 'http-errors';
 import { getPlaylistID, getVideos, getBestThumbnail } from './util';
-import Client, { ListChannelsOptions, PlaylistResource, PlaylistItemResource } from './Client';
+import Client, { PlaylistResource, PlaylistItemResource } from './Client';
 
 const { BadRequest, NotFound } = httpErrors;
 
@@ -206,7 +206,10 @@ export default class YouTubeImport {
     return data.items;
   }
 
-  async getPlaylistMetasForUser(url: string): Promise<{ channel: { id: string, title: string }, playlists: PlaylistMeta[] }> {
+  async getPlaylistMetasForUser(url: string): Promise<{
+    channel: { id: string, title: string },
+    playlists: PlaylistMeta[],
+  }> {
     const channel = await this.getChannelMeta(url);
 
     const specials = this.getSpecialChannelPlaylists(channel);

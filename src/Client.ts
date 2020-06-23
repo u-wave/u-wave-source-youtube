@@ -7,7 +7,7 @@ import qsStringify from 'qs-stringify';
  */
 export interface Params {
   [name: string]: string | number | undefined;
-};
+}
 
 /**
  * YouTube response format for endpoints that return a list of things.
@@ -26,7 +26,7 @@ export interface ListResponse<Kind extends string, Item> {
     resultsPerPage: number,
   };
   items: Item[];
-};
+}
 
 /**
  * Describes a thumbnail for a video or playlist.
@@ -49,7 +49,7 @@ export type Thumbnails = {
  * https://developers.google.com/youtube/v3/docs/search#resource
  */
 export interface SearchResultResource {
-  kind: "youtube#SearchResultResource";
+  kind: 'youtube#SearchResultResource';
   etag: string;
   id: {
     kind: string,
@@ -66,7 +66,7 @@ export interface SearchResultResource {
     channelTitle: string,
     liveBroadcastContent: string,
   };
-};
+}
 
 /**
  * The resource type returned from video listing requests.
@@ -271,7 +271,7 @@ export interface VideoResource {
       description: string
     }
   }
-};
+}
 
 /**
  * The resource type returned from playlist item listing requests.
@@ -279,7 +279,7 @@ export interface VideoResource {
  * https://developers.google.com/youtube/v3/docs/playlistItems#resource
  */
 export interface PlaylistItemResource {
-  kind: "youtube#playlistItem",
+  kind: 'youtube#playlistItem',
   etag: string,
   id: string,
   snippet: {
@@ -304,7 +304,7 @@ export interface PlaylistItemResource {
     videoPublishedAt: string,
   },
   status: { privacyStatus: string },
-};
+}
 
 /**
  * The resource type returned from playlist listing requests.
@@ -312,7 +312,7 @@ export interface PlaylistItemResource {
  * https://developers.google.com/youtube/v3/docs/playlists#resource
  */
 export interface PlaylistResource {
-  kind: "youtube#playlist",
+  kind: 'youtube#playlist',
   etag: string,
   id: string,
   snippet: {
@@ -338,7 +338,7 @@ export interface PlaylistResource {
       description: string,
     },
   },
-};
+}
 
 /**
  * The resource type returned from channel listing requests.
@@ -346,7 +346,7 @@ export interface PlaylistResource {
  * https://developers.google.com/youtube/v3/docs/channels#resource
  */
 export interface ChannelResource {
-  kind: "youtube#channel",
+  kind: 'youtube#channel',
   etag: string,
   id: string,
   snippet: {
@@ -476,9 +476,10 @@ export interface ChannelResource {
       description: string,
     },
   },
-};
+}
 
 function unsafeCast<Source, Target>(s: Source): Target {
+  // eslint-disable-next @typescript-eslint/no-explicit-any
   return s as any as Target;
 }
 
@@ -510,7 +511,8 @@ export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { 
  */
 export default class YouTubeClient {
   private params: Params;
-  private baseUrl: string = 'https://www.googleapis.com/youtube/v3';
+
+  private baseUrl = 'https://www.googleapis.com/youtube/v3';
 
   /**
    * @param params  Default query parameters for YouTube API requests—typically for API keys.
@@ -519,7 +521,7 @@ export default class YouTubeClient {
     this.params = params;
   }
 
-  private async get(resource: string, options: Params): Promise<object> {
+  private async get(resource: string, options: Params): Promise<Record<string, unknown>> {
     const query = qsStringify({ ...this.params, ...options });
     const response = await fetch(`${this.baseUrl}/${resource}?${query}`);
     const data = await response.json();
