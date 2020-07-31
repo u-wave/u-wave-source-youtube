@@ -61,7 +61,7 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
     return getVideos(client, sourceIDs);
   }
 
-  async function search(query: string, page?: string): Promise<unknown> {
+  async function search(query: string, page?: unknown): Promise<unknown> {
     // When searching for a video URL, we want to search for the video ID
     // only, because search results are very inconsistent with some types of
     // URLs.
@@ -70,7 +70,7 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
       ...defaultSearchOptions,
       ...searchOptions,
       q: id ? `"${id}"` : query,
-      pageToken: page,
+      pageToken: page as string,
     });
 
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
@@ -90,7 +90,9 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
     name: 'youtube',
     search,
     get: get, // eslint-disable-line object-shorthand
-    import: async (ctx: any, action: ChannelAction | PlaylistAction | ImportAction) => {
+    import: async (ctx: any, action_: unknown) => {
+      const action = action_ as ChannelAction | PlaylistAction | ImportAction;
+
       if (action.action === 'channel') {
         return importer.getPlaylistMetasForUser(action.url);
       }
