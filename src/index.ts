@@ -74,6 +74,13 @@ const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'
   videoSyndicated: 'true',
 };
 
+interface MediaSource {
+  name: string;
+  search: (query: string, page?: unknown) => Promise<unknown>;
+  get: (sourceIDs: string[]) => Promise<unknown>;
+  import: (ctx: unknown, action: unknown) => Promise<unknown>;
+}
+
 export interface YouTubeOptions {
   /**
    * Your YouTube API key.
@@ -86,12 +93,12 @@ export interface YouTubeOptions {
    * Options for the search endpoint.
    */
   search?: Partial<Pick<SearchOptions, Exclude<keyof SearchOptions, 'part' | 'fields' | 'type'>>>;
-};
+}
 
 /**
  * The YouTube media source. Pass this function to `uw.source()`.
  */
-export default function youTubeSource(uw: unknown, opts: YouTubeOptions) {
+export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaSource {
   if (!opts || !opts.key) {
     throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
       + 'configure your YouTube API access, see '
@@ -108,7 +115,7 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions) {
     return getVideos(client, sourceIDs);
   }
 
-  async function search(query: string, page?: string): Promise<unknown> {
+  async function search(query: string, page?: unknown): Promise<unknown> {
     // When searching for a video URL, we want to search for the video ID
     // only, because search results are very inconsistent with some types of
     // URLs.
@@ -117,7 +124,7 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions) {
       ...defaultSearchOptions,
       ...searchOptions,
       q: id ? `"${id}"` : query,
-      pageToken: page,
+      pageToken: page as string,
     });
 
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
@@ -138,7 +145,9 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions) {
     schema,
     search,
     get: get, // eslint-disable-line object-shorthand
-    import: async (ctx: any, action: ChannelAction | PlaylistAction | ImportAction) => {
+    import: async (ctx: any, action_: unknown) => {
+      const action = action_ as ChannelAction | PlaylistAction | ImportAction;
+
       if (action.action === 'channel') {
         return importer.getPlaylistMetasForUser(action.url);
       }

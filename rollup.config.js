@@ -3,6 +3,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import isBuiltinModule from 'is-builtin-module';
 
 const pkg = require('./package.json');
+
 const paths = pkg.exports['.'][0];
 
 const external = Object.keys(pkg.dependencies);

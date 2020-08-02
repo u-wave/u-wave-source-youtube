@@ -1,7 +1,6 @@
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import getYouTubeID from 'get-youtube-id';
-import chunk from 'chunk';
 import Client, { Thumbnails, VideoResource } from './Client';
 
 const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
@@ -45,7 +44,7 @@ export function getBestThumbnail(thumbnails: Thumbnails): string {
   return '';
 }
 
-function getBlockedCountryCodes(contentDetails: VideoResource["contentDetails"]): string[] {
+function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails']): string[] {
   if (contentDetails.regionRestriction) {
     return contentDetails.regionRestriction.blocked || [];
   }
@@ -63,7 +62,7 @@ export interface UwMedia {
     embedHeight: number | null,
     blockedIn: string[],
   };
-};
+}
 
 /**
  * Convert a YouTube Video resource to a üWave media object.
@@ -112,12 +111,19 @@ async function getVideosPage(client: Client, sourceIDs: string[]): Promise<UwMed
   return data.items.map(normalizeMedia).filter((item) => item.duration > 0);
 }
 
+function* chunk<T>(input: T[], chunkSize: number) {
+  for (let i = 0; i < input.length; i += chunkSize) {
+    yield input.slice(i, i + chunkSize);
+  }
+}
+
 /**
  * Fetch Video resources from the YouTube Data API.
  */
 export async function getVideos(client: Client, sourceIDs: string[]): Promise<UwMedia[]> {
   const ids = sourceIDs.map((id) => getYouTubeID(id) || id);
 
-  const pages = await Promise.all(chunk(ids, 50).map((page) => getVideosPage(client, page)));
+  const pageIDs = Array.from(chunk(ids, 50));
+  const pages = await Promise.all(pageIDs.map((page) => getVideosPage(client, page)));
   return pages.reduce((result, page) => result.concat(page), []);
 }

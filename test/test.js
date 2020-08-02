@@ -1,7 +1,7 @@
 const test = require('tape');
 const nock = require('nock');
 const path = require('path');
-const youTubeSource = require('../').default;
+const youTubeSource = require('..').default;
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';
 
