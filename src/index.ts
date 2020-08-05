@@ -76,6 +76,7 @@ const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'
 
 interface MediaSource {
   name: string;
+  schema: JSONSchema;
   search: (query: string, page?: unknown) => Promise<unknown>;
   get: (sourceIDs: string[]) => Promise<unknown>;
   import: (ctx: unknown, action: unknown) => Promise<unknown>;
