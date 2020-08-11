@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import createError from 'http-errors';
-import qsStringify from 'qs-stringify';
+import qs from 'qs';
 
 /**
  * General interface for query parameters to the YouTube API.
@@ -522,7 +522,7 @@ export default class YouTubeClient {
   }
 
   private async get(resource: string, options: Params): Promise<Record<string, unknown>> {
-    const query = qsStringify({ ...this.params, ...options });
+    const query = qs.stringify({ ...this.params, ...options });
     const response = await fetch(`${this.baseUrl}/${resource}?${query}`);
     const data = await response.json();
     if (!response.ok) {

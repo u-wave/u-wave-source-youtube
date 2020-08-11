@@ -12,12 +12,13 @@
     "http-errors": "^1.7.3",
     "node-fetch": "^2.6.0",
     "parse-iso-duration": "^1.1.0",
-    "qs-stringify": "^1.2.0"
+    "qs": "^6.9.4"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@types/http-errors": "^1.6.3",
     "@types/node-fetch": "^2.5.4",
+    "@types/qs": "^6.9.4",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
     "eslint": "^7.3.1",
