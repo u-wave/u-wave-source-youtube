@@ -8,6 +8,7 @@
   ],
   "dependencies": {
     "get-artist-title": "^1.2.0",
+    "get-youtube-chapters": "^1.0.0",
     "get-youtube-id": "^1.0.0",
     "http-errors": "^1.7.3",
     "node-fetch": "^2.6.0",

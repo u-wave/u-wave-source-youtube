@@ -1,6 +1,7 @@
 import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
 import getYouTubeID from 'get-youtube-id';
+import getYouTubeChapters from 'get-youtube-chapters';
 import Client, { Thumbnails, VideoResource } from './Client';
 
 const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
@@ -51,6 +52,12 @@ function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails'])
   return [];
 }
 
+type Chapter = {
+  start: number,
+  end: number,
+  title: string,
+};
+
 export interface UwMedia {
   sourceID: string;
   artist: string;
@@ -61,6 +68,7 @@ export interface UwMedia {
     embedWidth: number | null,
     embedHeight: number | null,
     blockedIn: string[],
+    chapters?: Chapter[],
   };
 }
 
@@ -72,19 +80,36 @@ export function normalizeMedia(video: VideoResource): UwMedia {
     defaultArtist: video.snippet.channelTitle,
   })!;
 
+  const duration = parseYouTubeDuration(video.contentDetails.duration);
+
+  const chapters = video.snippet.description ? getYouTubeChapters(video.snippet.description) : [];
+
   return {
     sourceID: video.id,
     // TODO Fix the detection in get-artist-title so that it doesn't split the
     // title into parts with only fluff.
     artist: artist ? artist.replace(/ - Topic$/, '') : '[unknown]',
     title: title || '[unknown]',
-    duration: parseYouTubeDuration(video.contentDetails.duration),
+    duration,
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
     sourceData: {
       // Can be used by clients to determine the aspect ratio.
       embedWidth: video.player ? video.player.embedWidth : null,
       embedHeight: video.player ? video.player.embedHeight : null,
       blockedIn: getBlockedCountryCodes(video.contentDetails),
+      // Add the `end` property to make things easier for clients.
+      chapters: chapters.map((chapter, index) => {
+        if (index < chapters.length - 1) {
+          return {
+            ...chapter,
+            end: chapters[index + 1].start,
+          };
+        }
+        return {
+          ...chapter,
+          end: duration,
+        };
+      }),
     },
   };
 }
@@ -95,7 +120,7 @@ async function getVideosPage(client: Client, sourceIDs: string[]): Promise<UwMed
     fields: `
       items(
         id,
-        snippet(title, channelTitle, thumbnails),
+        snippet(title, channelTitle, description, thumbnails),
         contentDetails(duration, regionRestriction),
         player(embedWidth, embedHeight)
       )
