@@ -17,25 +17,9 @@ const schema: JSONSchema = {
     search: {
       type: 'object',
       properties: {
-        part: {
-          type: 'string',
-          default: 'id,snippet',
-        },
-        fields: {
-          type: 'string',
-          default: `
-            items(id/videoId, snippet/liveBroadcastContent),
-            pageInfo,
-            nextPageToken,
-            prevPageToken
-          `.replace(/\s+/g, ''),
-        },
-        type: {
-          type: 'string',
-          default: 'video',
-        },
         safeSearch: {
           type: 'string',
+          title: 'Safe Search',
           default: 'none',
           enum: ['none', 'all'],
         },
@@ -45,11 +29,7 @@ const schema: JSONSchema = {
           description: 'Maximum amount of search results to return.',
           minimum: 0,
           maximum: 50,
-          default: 50,
-        },
-        videoSyndicated: {
-          type: 'boolean',
-          default: true,
+          default: 25,
         },
       },
       required: ['part', 'type'],
