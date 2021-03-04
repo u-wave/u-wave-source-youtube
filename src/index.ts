@@ -99,14 +99,19 @@ class YouTubeSource {
   }
 
   async search(query: string, page?: unknown): Promise<unknown> {
-    // When searching for a video URL, we want to search for the video ID
-    // only, because search results are very inconsistent with some types of
-    // URLs.
+    // When searching for a video URL, we want to look the video up directly.
+    // Actual YouTube search is not well suited for video IDs, and IDs with special characters in
+    // them can yield no or unexpected results. Additionally, we can save 99 quota points by using
+    // the videos.list endpoint instead of search.list.
     const id = getYouTubeID(query, { fuzzy: false });
+    if (id) {
+      return this.get([id]);
+    }
+
     const data = await this.client.search({
       ...defaultSearchOptions,
       ...this.searchOptions,
-      q: id ? `"${id}"` : query,
+      q: query,
       pageToken: page as string,
     });
 
