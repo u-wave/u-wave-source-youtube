@@ -1,7 +1,7 @@
 import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { JSONSchema } from 'json-schema-typed';
-import { getVideos } from './util';
+import { getPlaylistID, getVideos } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
@@ -75,6 +75,7 @@ export interface YouTubeOptions {
 class YouTubeSource {
   static sourceName = 'youtube';
   static schema = schema;
+  static api = 3;
 
   private searchOptions: YouTubeOptions['search'];
   private client: YouTubeClient;
@@ -92,6 +93,10 @@ class YouTubeSource {
     this.client = new YouTubeClient(params);
 
     this.importer = new Importer(this.client);
+  }
+
+  close() {
+    // Nothing yet
   }
 
   get(sourceIDs: string[]) {
@@ -123,27 +128,21 @@ class YouTubeSource {
       .map((item: SearchResultResource) => item.id.videoId));
   }
 
-  private async doImport(ctx: any, name: string, playlistID: string) {
+  async getPlaylistItems(ctx: any, idOrUrl: string): Promise<unknown> {
+    const playlistID = getPlaylistID(idOrUrl);
+    if (!playlistID) {
+      throw new BadRequest('Invalid playlist URL. Please provide a direct link to the playlist '
+        + 'you want to import.');
+    }
+
     const items = await this.importer.getPlaylistItems(playlistID);
-    return ctx.createPlaylist(name, items);
+    return items;
   }
 
-  async import(ctx: any, action_: unknown) {
-    const action = action_ as ChannelAction | PlaylistAction | ImportAction;
+  async getUserPlaylists(ctx: any, userID: string): Promise<unknown> {
+    const items = await this.importer.getPlaylistMetasForUser(userID);
 
-    if (action.action === 'channel') {
-      return this.importer.getPlaylistMetasForUser(action.url);
-    }
-    if (action.action === 'playlist') {
-      const importable = await this.importer.getImportablePlaylist(action.url);
-      importable.items = ctx.source.addSourceType(importable.items);
-      return importable;
-    }
-    if (action.action === 'importplaylist') {
-      return this.doImport(ctx, action.name, action.id);
-    }
-
-    throw new BadRequest(`Unknown action "${action}"`);
+    return items;
   }
 }
 

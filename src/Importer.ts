@@ -35,11 +35,13 @@ type ChannelMeta = {
 
 type PlaylistMeta = {
   sourceID: string,
-  sourceChannel: string,
   name: string,
   description: string,
   size: number,
   thumbnail: string,
+  sourceData: {
+    channelTitle: string,
+  },
 };
 
 type PlaylistsPage = { nextPage: string, items: PlaylistResource[] };
@@ -206,10 +208,7 @@ export default class YouTubeImport {
     return data.items;
   }
 
-  async getPlaylistMetasForUser(url: string): Promise<{
-    channel: { id: string, title: string },
-    playlists: PlaylistMeta[],
-  }> {
+  async getPlaylistMetasForUser(url: string): Promise<PlaylistMeta[]> {
     const channel = await this.getChannelMeta(url);
 
     const specials = this.getSpecialChannelPlaylists(channel);
@@ -219,16 +218,16 @@ export default class YouTubeImport {
 
     const allPlaylists = result[0].concat(result[1]);
 
-    return {
-      channel: { id: channel.id, title: channel.title },
-      playlists: allPlaylists.map((item) => ({
-        sourceID: item.id,
-        sourceChannel: item.snippet.channelTitle,
-        name: item.snippet.title,
-        description: item.snippet.description,
-        size: item.contentDetails.itemCount,
-        thumbnail: getBestThumbnail(item.snippet.thumbnails),
-      })),
-    };
+    return allPlaylists.map((item) => ({
+      sourceID: item.id,
+      sourceChannel: item.snippet.channelTitle,
+      name: item.snippet.title,
+      description: item.snippet.description,
+      size: item.contentDetails.itemCount,
+      thumbnail: getBestThumbnail(item.snippet.thumbnails),
+      sourceData: {
+        channelTitle: item.snippet.channelTitle,
+      },
+    }));
   }
 }
