@@ -5,7 +5,8 @@ import { getPlaylistID, getVideos } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
-const schema: JSONSchema = {
+const schema: JSONSchema & { 'uw:key': string } = {
+  'uw:key': 'source:youtube',
   type: 'object',
   properties: {
     key: {
