@@ -6,6 +6,8 @@ import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
 const schema: JSONSchema & { 'uw:key': string } = {
+  title: 'YouTube',
+  description: 'Settings for the YouTube media source',
   'uw:key': 'source:youtube',
   type: 'object',
   properties: {
@@ -33,7 +35,12 @@ const schema: JSONSchema & { 'uw:key': string } = {
           default: 25,
         },
       },
-      required: ['part', 'type'],
+      // TODO can `default` recurse somehow? so we don't have to duplicate the values
+      // for individual properties here?
+      default: {
+        safeSearch: 'none',
+        maxResults: 25,
+      },
     },
   },
   required: ['key'],
