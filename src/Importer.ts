@@ -4,8 +4,9 @@ import Client, { PlaylistResource, PlaylistItemResource } from './Client';
 
 const { BadRequest, NotFound } = httpErrors;
 
-const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
-const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;
+const rxChannelUrl = /youtube\.com\/channel\/(UC[^/?#]+)/i;
+const rxUserUrl = /youtube\.com\/(?:user|c)\/([^/?#]+)/i;
+const rxPlaylistID = /^(UC[-_a-z0-9]+)$/i;
 
 const getPlaylistsOptions = {
   part: 'snippet,contentDetails',
@@ -129,7 +130,7 @@ export default class YouTubeImport {
   }
 
   async getChannelMeta(url: string): Promise<ChannelMeta> {
-    let match = url.match(rxChannelUrl);
+    let match = url.match(rxPlaylistID) || url.match(rxChannelUrl);
     const baseOptions = {
       part: 'snippet,contentDetails',
       fields: `
