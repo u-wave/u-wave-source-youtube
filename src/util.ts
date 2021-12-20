@@ -76,6 +76,8 @@ export interface UwMedia {
  * Convert a YouTube Video resource to a üWave media object.
  */
 export function normalizeMedia(video: VideoResource): UwMedia {
+  // getArtistTitle always returns something if `defaultArtist` is set
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [artist, title] = getArtistTitle(video.snippet.title, {
     defaultArtist: video.snippet.channelTitle,
   })!;

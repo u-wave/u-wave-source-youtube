@@ -512,6 +512,7 @@ export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { 
  */
 export default class YouTubeClient {
   private params: Params;
+
   private agent: https.Agent;
 
   private baseUrl = 'https://www.googleapis.com/youtube/v3';

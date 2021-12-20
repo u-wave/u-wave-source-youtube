@@ -41,6 +41,10 @@ export interface YouTubeOptions {
   search?: Partial<Pick<SearchOptions, Exclude<keyof SearchOptions, 'part' | 'fields' | 'type'>>>;
 }
 
+type ChannelAction = { action: 'channel', url: string };
+type PlaylistAction = { action: 'playlist', url: string };
+type ImportAction = { action: 'importplaylist', name: string, id: string };
+
 /**
  * The YouTube media source. Pass this function to `uw.source()`.
  */
@@ -114,7 +118,3 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
     },
   };
 }
-
-type ChannelAction = { action: 'channel', url: string };
-type PlaylistAction = { action: 'playlist', url: string };
-type ImportAction = { action: 'importplaylist', name: string, id: string };
