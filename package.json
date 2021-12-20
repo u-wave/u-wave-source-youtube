@@ -10,7 +10,7 @@
     "get-artist-title": "^1.2.0",
     "get-youtube-chapters": "^1.0.0",
     "get-youtube-id": "^1.0.0",
-    "http-errors": "^1.7.3",
+    "http-errors": "^2.0.0",
     "node-fetch": "^2.6.0",
     "parse-iso-duration": "^1.1.0",
     "qs": "^6.9.4"
