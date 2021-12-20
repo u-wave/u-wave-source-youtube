@@ -18,7 +18,7 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@types/http-errors": "^1.6.3",
-    "@types/node-fetch": "^2.5.4",
+    "@types/node-fetch": "^3.0.3",
     "@types/qs": "^6.9.4",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
