@@ -480,8 +480,7 @@ export interface ChannelResource {
 }
 
 function unsafeCast<Source, Target>(s: Source): Target {
-  // eslint-disable-next @typescript-eslint/no-explicit-any
-  return s as any as Target;
+  return s as unknown as Target;
 }
 
 export type RequestOptions = {

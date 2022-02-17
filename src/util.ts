@@ -46,10 +46,7 @@ export function getBestThumbnail(thumbnails: Thumbnails): string {
 }
 
 function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails']): string[] {
-  if (contentDetails.regionRestriction) {
-    return contentDetails.regionRestriction.blocked || [];
-  }
-  return [];
+  return contentDetails.regionRestriction?.blocked ?? [];
 }
 
 type Chapter = {
@@ -96,8 +93,8 @@ export function normalizeMedia(video: VideoResource): UwMedia {
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
     sourceData: {
       // Can be used by clients to determine the aspect ratio.
-      embedWidth: video.player ? video.player.embedWidth : null,
-      embedHeight: video.player ? video.player.embedHeight : null,
+      embedWidth: video.player?.embedWidth ?? null,
+      embedHeight: video.player?.embedHeight ?? null,
       blockedIn: getBlockedCountryCodes(video.contentDetails),
       // Add the `end` property to make things easier for clients.
       chapters: chapters.map((chapter, index) => {
