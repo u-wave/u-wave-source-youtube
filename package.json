@@ -11,7 +11,7 @@
     "get-youtube-chapters": "^1.0.0",
     "get-youtube-id": "^1.0.0",
     "http-errors": "^2.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.2.4",
     "parse-iso-duration": "^1.1.0"
   },
   "devDependencies": {
