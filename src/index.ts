@@ -1,6 +1,6 @@
 import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
-import { getVideos } from './util';
+import { getVideos, parseMediaTitle, type UwMedia } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
@@ -48,7 +48,7 @@ type ImportAction = { action: 'importplaylist', name: string, id: string };
 /**
  * The YouTube media source. Pass this function to `uw.source()`.
  */
-export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaSource {
+export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): MediaSource {
   if (!opts || !opts.key) {
     throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
       + 'configure your YouTube API access, see '
@@ -61,18 +61,19 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
 
   const importer = new Importer(client);
 
-  function get(sourceIDs: string[]) {
-    return getVideos(client, sourceIDs);
+  async function get(sourceIDs: string[]) {
+    const results = await getVideos(client, sourceIDs);
+    return results.map(parseMediaTitle);
   }
 
-  async function search(query: string, page?: unknown): Promise<unknown> {
+  async function search(query: string, page?: unknown): Promise<UwMedia[]> {
     // When searching for a video URL, we want to look the video up directly.
     // Actual YouTube search is not well suited for video IDs, and IDs with special characters in
     // them can yield no or unexpected results. Additionally, we can save 99 quota points by using
     // the videos.list endpoint instead of search.list.
     const id = getYouTubeID(query, { fuzzy: false });
     if (id) {
-      return get([id]);
+      return getVideos(client, [id]);
     }
 
     const data = await client.search({
@@ -85,14 +86,14 @@ export default function youTubeSource(uw: unknown, opts: YouTubeOptions): MediaS
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
     const isBroadcast = (item: SearchResultResource) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return get(data.items
+    return getVideos(client, data.items
       .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
       .map((item: SearchResultResource) => item.id.videoId));
   }
 
   async function doImport(ctx: any, name: string, playlistID: string) {
     const items = await importer.getPlaylistItems(playlistID);
-    return ctx.createPlaylist(name, items);
+    return ctx.createPlaylist(name, items.map(parseMediaTitle));
   }
 
   return {

@@ -62,8 +62,6 @@ export interface UwMedia {
   duration: number;
   thumbnail: string;
   sourceData: {
-    sourceTitle: string;
-    sourceArtist: string;
     embedWidth: number | null,
     embedHeight: number | null,
     blockedIn: string[],
@@ -74,29 +72,18 @@ export interface UwMedia {
 /**
  * Convert a YouTube Video resource to a üWave media object.
  */
-export function normalizeMedia(video: VideoResource): UwMedia {
-  // getArtistTitle always returns something if `defaultArtist` is set
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const [artist, title] = getArtistTitle(video.snippet.title, {
-    defaultArtist: video.snippet.channelTitle,
-  })!;
-
+function convertVideoToMedia(video: VideoResource): UwMedia {
   const duration = parseYouTubeDuration(video.contentDetails.duration);
 
   const chapters = video.snippet.description ? getYouTubeChapters(video.snippet.description) : [];
 
   return {
     sourceID: video.id,
-    // TODO Fix the detection in get-artist-title so that it doesn't split the
-    // title into parts with only fluff.
-    artist: artist ? artist.replace(/ - Topic$/, '') : '[unknown]',
-    title: title || '[unknown]',
+    artist: video.snippet.channelTitle,
+    title: video.snippet.title,
     duration,
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
     sourceData: {
-      // Shown in search results.
-      sourceTitle: video.snippet.title,
-      sourceArtist: video.snippet.channelTitle,
       // Can be used by clients to determine the aspect ratio.
       embedWidth: video.player?.embedWidth ?? null,
       embedHeight: video.player?.embedHeight ?? null,
@@ -115,6 +102,25 @@ export function normalizeMedia(video: VideoResource): UwMedia {
         };
       }),
     },
+  };
+}
+
+/**
+ * Parse artist and title information from a YouTube video and channel title.
+ */
+export function parseMediaTitle(media: UwMedia): UwMedia {
+  // getArtistTitle always returns something if `defaultArtist` is set
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const [artist, title] = getArtistTitle(media.title, {
+    defaultArtist: media.artist,
+  })!;
+
+  return {
+    ...media,
+    // TODO Fix the detection in get-artist-title so that it doesn't split the
+    // title into parts with only fluff.
+    artist: artist ? artist.replace(/ - Topic$/, '') : '[unknown]',
+    title: title || '[unknown]',
   };
 }
 
@@ -137,7 +143,9 @@ async function getVideosPage(client: Client, sourceIDs: string[]): Promise<UwMed
     maxHeight: 8192,
   });
 
-  return data.items.map(normalizeMedia).filter((item) => item.duration > 0);
+  return data.items
+    .map(convertVideoToMedia)
+    .filter((item) => item.duration > 0);
 }
 
 function* chunk<T>(input: T[], chunkSize: number) {
@@ -154,5 +162,5 @@ export async function getVideos(client: Client, sourceIDs: string[]): Promise<Uw
 
   const pageIDs = Array.from(chunk(ids, 50));
   const pages = await Promise.all(pageIDs.map((page) => getVideosPage(client, page)));
-  return pages.reduce((result, page) => result.concat(page), []);
+  return pages.flat();
 }
