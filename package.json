@@ -12,8 +12,7 @@
     "get-youtube-id": "^1.0.0",
     "http-errors": "^2.0.0",
     "node-fetch": "^2.6.0",
-    "parse-iso-duration": "^1.1.0",
-    "qs": "^6.9.4"
+    "parse-iso-duration": "^1.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",
