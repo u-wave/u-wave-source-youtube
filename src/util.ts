@@ -69,8 +69,6 @@ export interface UwMedia {
   duration: number;
   thumbnail: string;
   sourceData: {
-    originalTitle: string,
-    channelTitle: string,
     embedWidth: number | null,
     embedHeight: number | null,
     blockedIn: string[],
@@ -93,8 +91,6 @@ function convertVideoToMedia(video: VideoResource): UwMedia {
     duration,
     thumbnail: getBestThumbnail(video.snippet.thumbnails),
     sourceData: {
-      originalTitle: video.snippet.title,
-      channelTitle: video.snippet.channelTitle,
       // Can be used by clients to determine the aspect ratio.
       embedWidth: video.player?.embedWidth ?? null,
       embedHeight: video.player?.embedHeight ?? null,
