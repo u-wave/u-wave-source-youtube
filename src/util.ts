@@ -4,7 +4,6 @@ import getYouTubeID from 'get-youtube-id';
 import getYouTubeChapters from 'get-youtube-chapters';
 import Client, { Thumbnails, VideoResource } from './Client';
 
-const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
 const rxPlaylistID = /^([a-z0-9_-]+)$/i;
 
 /**
@@ -15,12 +14,20 @@ export function getPlaylistID(url: string): string | null {
     return url;
   }
 
-  const match = url.match(rxSimplePlaylistUrl);
-  if (match) {
-    return match[1];
-  }
+  try {
+    const asUrl = new URL(url);
+    if (!/(\.|^)youtube\.com$/.test(asUrl.hostname)) {
+      return null;
+    }
 
-  return null;
+    const listId = asUrl.searchParams.get('list');
+    if (listId) {
+      return listId;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 function parseYouTubeDuration(duration: string): number {
