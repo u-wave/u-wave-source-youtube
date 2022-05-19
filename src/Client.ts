@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import createError from 'http-errors';
-import qs from 'qs';
 import https from 'https';
 
 /**
@@ -480,8 +479,7 @@ export interface ChannelResource {
 }
 
 function unsafeCast<Source, Target>(s: Source): Target {
-  // eslint-disable-next @typescript-eslint/no-explicit-any
-  return s as any as Target;
+  return s as unknown as Target;
 }
 
 export type RequestOptions = {
@@ -512,6 +510,7 @@ export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { 
  */
 export default class YouTubeClient {
   private params: Params;
+
   private agent: https.Agent;
 
   private baseUrl = 'https://www.googleapis.com/youtube/v3';
@@ -525,7 +524,12 @@ export default class YouTubeClient {
   }
 
   private async get(resource: string, options: Params): Promise<Record<string, unknown>> {
-    const query = qs.stringify({ ...this.params, ...options });
+    const params = Object.fromEntries(
+      Object.entries({ ...this.params, ...options })
+        .filter(([, value]) => value != null)
+        .map(([key, value]) => [key, String(value)]),
+    );
+    const query = new URLSearchParams(params);
     const response = await fetch(`${this.baseUrl}/${resource}?${query}`, {
       agent: this.agent,
     });

@@ -1,7 +1,7 @@
 import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { JSONSchema } from 'json-schema-typed';
-import { getPlaylistID, getVideos } from './util';
+import { getPlaylistID, getVideos, parseMediaTitle, type UwMedia } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
 
@@ -107,8 +107,9 @@ class YouTubeSource {
     // Nothing yet
   }
 
-  get(sourceIDs: string[]) {
-    return getVideos(this.client, sourceIDs);
+  async get(sourceIDs: string[]) {
+    const results = await getVideos(this.client, sourceIDs);
+    return results.map(parseMediaTitle);
   }
 
   async search(query: string, page?: unknown): Promise<unknown> {
@@ -118,7 +119,7 @@ class YouTubeSource {
     // the videos.list endpoint instead of search.list.
     const id = getYouTubeID(query, { fuzzy: false });
     if (id) {
-      return this.get([id]);
+      return getVideos(this.client, [id]);
     }
 
     const data = await this.client.search({
@@ -131,7 +132,7 @@ class YouTubeSource {
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
     const isBroadcast = (item: SearchResultResource) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return this.get(data.items
+    return getVideos(this.client, data.items
       .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
       .map((item: SearchResultResource) => item.id.videoId));
   }
@@ -144,6 +145,7 @@ class YouTubeSource {
     }
 
     const items = await this.importer.getPlaylistItems(playlistID);
+    // TODO parseMediaTitle if we are importing them NOW
     return items;
   }
 

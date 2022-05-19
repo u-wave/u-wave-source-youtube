@@ -1,5 +1,10 @@
 import httpErrors from 'http-errors';
-import { getPlaylistID, getVideos, getBestThumbnail } from './util';
+import {
+  getPlaylistID,
+  getVideos,
+  getBestThumbnail,
+  type UwMedia,
+} from './util';
 import Client, { PlaylistResource, PlaylistItemResource } from './Client';
 
 const { BadRequest, NotFound } = httpErrors;
@@ -69,7 +74,7 @@ export default class YouTubeImport {
     };
   }
 
-  async getPlaylistItems(playlistID: string): Promise<unknown[]> {
+  async getPlaylistItems(playlistID: string): Promise<UwMedia[]> {
     let page;
     const playlistItems = [];
     try {
@@ -81,9 +86,12 @@ export default class YouTubeImport {
         page = res.nextPage;
         playlistItems.push(...res.items);
       } while (page);
-    } catch (e) {
-      throw new BadRequest('That playlist could not be imported. If it\'s a private playlist, '
-        + 'change its visibility to Unlisted and try again.');
+    } catch (error) {
+      throw Object.assign(
+        new BadRequest('That playlist could not be imported. If it\'s a private playlist, '
+          + 'change its visibility to Unlisted and try again.'),
+        { cause: error },
+      );
     }
 
     const ids = playlistItems.map((item) => item.contentDetails.videoId);

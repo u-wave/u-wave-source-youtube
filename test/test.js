@@ -40,6 +40,10 @@ test('searching for videos', async (t) => {
     t.true('title' in item);
   });
 
+  // Search results should not modify the artist/title.
+  t.is(results[0].artist, 'beyonceVEVO');
+  t.is(results[0].title, 'Beyoncé - Hold Up');
+
   t.end();
 });
 
