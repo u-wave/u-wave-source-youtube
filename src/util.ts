@@ -112,14 +112,14 @@ export function parseMediaTitle(media: UwMedia): UwMedia {
   // getArtistTitle always returns something if `defaultArtist` is set
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [artist, title] = getArtistTitle(media.title, {
-    defaultArtist: media.artist,
+    defaultArtist: media.artist.replace(/ - Topic$/, ''),
   })!;
 
   return {
     ...media,
     // TODO Fix the detection in get-artist-title so that it doesn't split the
     // title into parts with only fluff.
-    artist: artist ? artist.replace(/ - Topic$/, '') : '[unknown]',
+    artist: artist || '[unknown]',
     title: title || '[unknown]',
   };
 }
