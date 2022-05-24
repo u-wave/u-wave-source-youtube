@@ -1,8 +1,50 @@
 import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
-import { getVideos, parseMediaTitle, type UwMedia } from './util';
+import { JSONSchema } from 'json-schema-typed';
+import { getPlaylistID, getVideos, parseMediaTitle, type UwMedia } from './util';
 import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
 import Importer from './Importer';
+
+const schema: JSONSchema & { 'uw:key': string } = {
+  title: 'YouTube',
+  description: 'Settings for the YouTube media source',
+  'uw:key': 'source:youtube',
+  type: 'object',
+  properties: {
+    key: {
+      type: 'string',
+      title: 'YouTube API Key',
+      description: 'For information on how to configure your YouTube API access, '
+        + 'see https://developers.google.com/youtube/v3/getting-started.',
+    },
+    search: {
+      type: 'object',
+      properties: {
+        safeSearch: {
+          type: 'string',
+          title: 'Safe Search',
+          default: 'none',
+          enum: ['none', 'all'],
+        },
+        maxResults: {
+          type: 'number',
+          title: 'Max Results',
+          description: 'Maximum amount of search results to return.',
+          minimum: 0,
+          maximum: 50,
+          default: 25,
+        },
+      },
+      // TODO can `default` recurse somehow? so we don't have to duplicate the values
+      // for individual properties here?
+      default: {
+        safeSearch: 'none',
+        maxResults: 25,
+      },
+    },
+  },
+  required: ['key'],
+};
 
 const { BadRequest } = httpErrors;
 
@@ -20,12 +62,9 @@ const defaultSearchOptions: Pick<SearchOptions, Exclude<keyof SearchOptions, 'q'
   videoSyndicated: 'true',
 };
 
-interface MediaSource {
-  name: string;
-  search: (query: string, page?: unknown) => Promise<unknown>;
-  get: (sourceIDs: string[]) => Promise<unknown>;
-  import: (ctx: unknown, action: unknown) => Promise<unknown>;
-}
+type ChannelAction = { action: 'channel', url: string };
+type PlaylistAction = { action: 'playlist', url: string };
+type ImportAction = { action: 'importplaylist', name: string, id: string };
 
 export interface YouTubeOptions {
   /**
@@ -41,44 +80,51 @@ export interface YouTubeOptions {
   search?: Partial<Pick<SearchOptions, Exclude<keyof SearchOptions, 'part' | 'fields' | 'type'>>>;
 }
 
-type ChannelAction = { action: 'channel', url: string };
-type PlaylistAction = { action: 'playlist', url: string };
-type ImportAction = { action: 'importplaylist', name: string, id: string };
+class YouTubeSource {
+  static sourceName = 'youtube';
+  static schema = schema;
+  static api = 3;
 
-/**
- * The YouTube media source. Pass this function to `uw.source()`.
- */
-export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): MediaSource {
-  if (!opts || !opts.key) {
-    throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
-      + 'configure your YouTube API access, see '
-      + 'https://developers.google.com/youtube/v3/getting-started.');
+  private searchOptions: YouTubeOptions['search'];
+  private client: YouTubeClient;
+  private importer: Importer;
+
+  constructor(opts: YouTubeOptions) {
+    if (!opts || !opts.key) {
+      throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
+        + 'configure your YouTube API access, see '
+        + 'https://developers.google.com/youtube/v3/getting-started.');
+    }
+
+    const params = { key: opts.key };
+    this.searchOptions = opts.search || {};
+    this.client = new YouTubeClient(params);
+
+    this.importer = new Importer(this.client);
   }
 
-  const params = { key: opts.key };
-  const searchOptions = opts.search || {};
-  const client = new YouTubeClient(params);
+  close() {
+    // Nothing yet
+  }
 
-  const importer = new Importer(client);
-
-  async function get(sourceIDs: string[]) {
-    const results = await getVideos(client, sourceIDs);
+  async get(sourceIDs: string[]) {
+    const results = await getVideos(this.client, sourceIDs);
     return results.map(parseMediaTitle);
   }
 
-  async function search(query: string, page?: unknown): Promise<UwMedia[]> {
+  async search(query: string, page?: unknown): Promise<unknown> {
     // When searching for a video URL, we want to look the video up directly.
     // Actual YouTube search is not well suited for video IDs, and IDs with special characters in
     // them can yield no or unexpected results. Additionally, we can save 99 quota points by using
     // the videos.list endpoint instead of search.list.
     const id = getYouTubeID(query, { fuzzy: false });
     if (id) {
-      return getVideos(client, [id]);
+      return getVideos(this.client, [id]);
     }
 
-    const data = await client.search({
+    const data = await this.client.search({
       ...defaultSearchOptions,
-      ...searchOptions,
+      ...this.searchOptions,
       q: query,
       pageToken: page as string,
     });
@@ -86,36 +132,28 @@ export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): Media
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
     const isBroadcast = (item: SearchResultResource) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return getVideos(client, data.items
+    return getVideos(this.client, data.items
       .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
       .map((item: SearchResultResource) => item.id.videoId));
   }
 
-  async function doImport(ctx: any, name: string, playlistID: string) {
-    const items = await importer.getPlaylistItems(playlistID);
-    return ctx.createPlaylist(name, items.map(parseMediaTitle));
+  async getPlaylistItems(ctx: any, idOrUrl: string): Promise<unknown> {
+    const playlistID = getPlaylistID(idOrUrl);
+    if (!playlistID) {
+      throw new BadRequest('Invalid playlist URL. Please provide a direct link to the playlist '
+        + 'you want to import.');
+    }
+
+    const items = await this.importer.getPlaylistItems(playlistID);
+    // TODO parseMediaTitle if we are importing them NOW
+    return items;
   }
 
-  return {
-    name: 'youtube',
-    search,
-    get: get, // eslint-disable-line object-shorthand
-    import: async (ctx: any, action_: unknown) => {
-      const action = action_ as ChannelAction | PlaylistAction | ImportAction;
+  async getUserPlaylists(ctx: any, userID: string): Promise<unknown> {
+    const items = await this.importer.getPlaylistMetasForUser(userID);
 
-      if (action.action === 'channel') {
-        return importer.getPlaylistMetasForUser(action.url);
-      }
-      if (action.action === 'playlist') {
-        const importable = await importer.getImportablePlaylist(action.url);
-        importable.items = ctx.source.addSourceType(importable.items);
-        return importable;
-      }
-      if (action.action === 'importplaylist') {
-        return doImport(ctx, action.name, action.id);
-      }
-
-      throw new BadRequest(`Unknown action "${action}"`);
-    },
-  };
+    return items;
+  }
 }
+
+export default YouTubeSource;
