@@ -45,8 +45,8 @@ export function getBestThumbnail(thumbnails: Thumbnails): string {
   return '';
 }
 
-function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails']): string[] {
-  return contentDetails.regionRestriction?.blocked ?? [];
+function getBlockedCountryCodes(contentDetails: VideoResource['contentDetails']): string[] | null {
+  return contentDetails.regionRestriction?.blocked ?? null;
 }
 
 type Chapter = {
@@ -64,7 +64,7 @@ export interface UwMedia {
   sourceData: {
     embedWidth: number | null,
     embedHeight: number | null,
-    blockedIn: string[],
+    blockedIn: string[] | null,
     chapters?: Chapter[],
   };
 }
