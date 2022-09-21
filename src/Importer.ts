@@ -10,7 +10,7 @@ import Client, { PlaylistResource, PlaylistItemResource } from './Client';
 const { BadRequest, NotFound } = httpErrors;
 
 const rxChannelUrl = /youtube\.com\/channel\/([^/?#]+)/i;
-const rxUserUrl = /youtube\.com\/user\/([^/?#]+)/i;
+const rxUserUrl = /youtube\.com\/(?:user|c)\/([^/?#]+)/i;
 
 const getPlaylistsOptions = {
   part: 'snippet,contentDetails',
