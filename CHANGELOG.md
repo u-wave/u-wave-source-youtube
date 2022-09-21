@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.0.0 / 23 May 2022
+## 2.0.1 / 21 Sep 2022
+Bugfixes:
+ * Accept `/c/` vanity URLs.
+ * Fix crash when `items` is completely missing from Google response.
+ * Do not store `blockedIn` if it is empty.
 
+## 2.0.0 / 23 May 2022
 Features:
  * **breaking:** Add native ES module export.
  * **breaking:** Require Node.js 14+.
