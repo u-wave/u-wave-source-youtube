@@ -165,7 +165,7 @@ export default class YouTubeImport {
       ...baseOptions,
       ...idOptions,
     });
-    if (data.items.length > 1) {
+    if (!data.items || data.items.length > 1) {
       throw new NotFound('That channel could not be found. Please check that you provided the '
         + 'full URL to the channel.');
     }
