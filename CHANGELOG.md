@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.1.0 / 01 Oct 2022
+Features:
+* Support more chapter formats.
+
 ## 2.0.1 / 21 Sep 2022
 Bugfixes:
  * Accept `/c/` vanity URLs.
