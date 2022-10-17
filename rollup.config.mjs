@@ -8,8 +8,6 @@ const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const paths = pkg.exports['.'][0];
 const external = Object.keys(pkg.dependencies);
 
-process.env.BABEL_ENV = 'rollup';
-
 export default {
   input: 'src/index.ts',
   output: [{
