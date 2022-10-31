@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.0",
-    "@types/http-errors": "^1.6.3",
+    "@types/http-errors": "^2.0.0",
     "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
