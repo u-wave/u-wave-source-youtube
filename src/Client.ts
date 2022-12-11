@@ -478,10 +478,6 @@ export interface ChannelResource {
   },
 }
 
-function unsafeCast<Source, Target>(s: Source): Target {
-  return s as unknown as Target;
-}
-
 export type RequestOptions = {
   part: string,
   fields?: string,
@@ -523,7 +519,7 @@ export default class YouTubeClient {
     this.agent = new https.Agent({ keepAlive: true });
   }
 
-  private async get(resource: string, options: Params): Promise<Record<string, unknown>> {
+  private async get<TResponse>(resource: string, options: Params): Promise<TResponse> {
     const params = Object.fromEntries(
       Object.entries({ ...this.params, ...options })
         .filter(([, value]) => value != null)
@@ -541,22 +537,22 @@ export default class YouTubeClient {
   }
 
   search(options: SearchOptions): Promise<ListResponse<'youtube#searchListResponse', SearchResultResource>> {
-    return unsafeCast(this.get('search', options));
+    return this.get<ListResponse<'youtube#searchListResponse', SearchResultResource>>('search', options);
   }
 
   listVideos(options: ListVideosOptions): Promise<ListResponse<'youtube#videoListResponse', VideoResource>> {
-    return unsafeCast(this.get('videos', options));
+    return this.get<ListResponse<'youtube#videoListResponse', VideoResource>>('videos', options);
   }
 
   listPlaylistItems(options: ListPlaylistItemsOptions): Promise<ListResponse<'youtube#playlistItemListResponse', PlaylistItemResource>> {
-    return unsafeCast(this.get('playlistItems', options));
+    return this.get<ListResponse<'youtube#playlistItemListResponse', PlaylistItemResource>>('playlistItems', options);
   }
 
   listPlaylists(options: ListPlaylistsOptions): Promise<ListResponse<'youtube#playlistListResponse', PlaylistResource>> {
-    return unsafeCast(this.get('playlists', options));
+    return this.get<ListResponse<'youtube#playlistListResponse', PlaylistResource>>('playlists', options);
   }
 
   listChannels(options: ListChannelsOptions): Promise<ListResponse<'youtube#channelListResponse', ChannelResource>> {
-    return unsafeCast(this.get('channels', options));
+    return this.get<ListResponse<'youtube#channelListResponse', ChannelResource>>('channels', options);
   }
 }
