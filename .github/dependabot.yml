@@ -1,7 +1,35 @@
 version: 2
 updates:
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "ci"
 - package-ecosystem: npm
   directory: "/"
   schedule:
     interval: weekly
   open-pull-requests-limit: 10
+  groups:
+    vitest:
+      patterns:
+      - "@vitest/*"
+      - "vitest"
+    eslint:
+      patterns:
+      - "@typescript-eslint/*"
+      - "eslint"
+      - "eslint-*"
+    babel:
+      patterns:
+      - "@babel/*"
+    rollup:
+      patterns:
+      - "rollup"
+      - "rollup-*"
+      - "@rollup/*"
+    types:
+      patterns:
+      - "@types/*"
