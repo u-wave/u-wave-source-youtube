@@ -1,7 +1,8 @@
-const test = require('tape');
-const nock = require('nock');
-const path = require('path');
-const youTubeSource = require('..').default;
+import test from 'node:test';
+import * as assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
+import nock from 'nock';
+import youTubeSource from 'u-wave-source-youtube';
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';
 
@@ -9,18 +10,16 @@ const createSource = () => youTubeSource({}, { key: FAKE_KEY });
 
 const API_HOST = 'https://www.googleapis.com';
 
-const fixture = (name) => path.join(__dirname, 'responses', `${name}.json`);
+const fixture = (name) => fileURLToPath(new URL(`./responses/${name}.json`, import.meta.url));
 
-test('providing a key is required', (t) => {
-  t.throws(
+test('providing a key is required', () => {
+  assert.throws(
     () => youTubeSource({}),
     /Expected a YouTube API key/,
   );
-
-  t.end();
 });
 
-test('searching for videos', async (t) => {
+test('searching for videos', async () => {
   const src = createSource();
 
   nock(API_HOST).get('/youtube/v3/search')
@@ -33,21 +32,19 @@ test('searching for videos', async (t) => {
   const results = await src.search('Beyoncé');
 
   // Our mocked search only returns 5 items. Actual search would return 50. 🙈
-  t.is(results.length, 5);
+  assert.equal(results.length, 5);
 
   results.forEach((item) => {
-    t.true('artist' in item);
-    t.true('title' in item);
+    assert.ok('artist' in item);
+    assert.ok('title' in item);
   });
 
   // Search results should not modify the artist/title.
-  t.is(results[0].artist, 'beyonceVEVO');
-  t.is(results[0].title, 'Beyoncé - Hold Up');
-
-  t.end();
+  assert.equal(results[0].artist, 'beyonceVEVO');
+  assert.equal(results[0].title, 'Beyoncé - Hold Up');
 });
 
-test('get videos by id', async (t) => {
+test('get videos by id', async () => {
   const src = createSource();
 
   nock(API_HOST).get('/youtube/v3/videos')
@@ -56,15 +53,13 @@ test('get videos by id', async (t) => {
 
   const items = await src.get(['n0gAo8z859U', 'XO4xNQ-pWPQ']);
 
-  t.is(items.length, 2);
+  assert.equal(items.length, 2);
 
-  t.is(items[0].artist, 'LAYBACKSOUND');
-  t.is(items[1].artist, 'KIRARA');
-
-  t.end();
+  assert.equal(items[0].artist, 'LAYBACKSOUND');
+  assert.equal(items[1].artist, 'KIRARA');
 });
 
-test('defaults to using the channel name as the artist name', async (t) => {
+test('defaults to using the channel name as the artist name', async () => {
   const src = createSource();
 
   nock(API_HOST).get('/youtube/v3/videos')
@@ -74,9 +69,7 @@ test('defaults to using the channel name as the artist name', async (t) => {
 
   const items = await src.get(['t6gDp9IsBgw']);
 
-  t.is(items.length, 1);
-  t.is(items[0].artist, 'lang lee');
-  t.is(items[0].title, '신의 놀이 (Playing God)');
-
-  t.end();
+  assert.equal(items.length, 1);
+  assert.equal(items[0].artist, 'lang lee');
+  assert.equal(items[0].title, '신의 놀이 (Playing God)');
 });

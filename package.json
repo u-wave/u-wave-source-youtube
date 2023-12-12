@@ -6,6 +6,7 @@
   "contributors": [
     "Renée Kooi <renee@kooi.me>"
   ],
+  "type": "module",
   "dependencies": {
     "get-artist-title": "^1.2.0",
     "get-youtube-chapters": "^2.0.0",
@@ -15,7 +16,6 @@
     "parse-iso-duration": "^1.1.0"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.0.0",
     "@types/http-errors": "^2.0.0",
     "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
@@ -24,38 +24,29 @@
     "eslint": "^8.5.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.21.2",
-    "is-builtin-module": "^3.0.0",
     "nock": "^13.0.3",
-    "rollup": "^4.1.4",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "tape": "^5.0.0",
-    "tslib": "^2.0.0",
+    "tsup": "^8.0.1",
     "typescript": "^5.0.2"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 18"
   },
+  "main": "./dist/index.js",
   "exports": {
-    ".": [
-      {
-        "import": "./dist/u-wave-source-youtube.mjs",
-        "default": "./dist/u-wave-source-youtube.cjs"
-      },
-      "./dist/u-wave-source-youtube.cjs"
-    ]
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
   },
   "keywords": [
     "u-wave-source",
     "youtube"
   ],
   "license": "MIT",
-  "main": "./dist/u-wave-source-youtube.cjs",
   "repository": "u-wave/u-wave-source-youtube",
   "scripts": {
-    "build": "rollup -c",
+    "build": "tsup src/index.ts --format esm --dts",
     "prepare": "npm run build",
-    "tape": "tape -r ./test/init.js ./test/test.js",
-    "test": "npm run build && npm run tape"
+    "tests-only": "node test/test.js",
+    "test": "npm run build && npm run tests-only"
   },
   "typings": "./dist/index.d.ts"
 }

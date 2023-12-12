@@ -24,13 +24,7 @@ module.exports = {
       },
     },
     {
-      files: ['test/*.js'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
-    {
-      files: ['.eslintrc.js', 'rollup.config.js', 'test/*.js'],
+      files: ['.eslintrc.cjs', 'test/*.js'],
       env: {
         node: true,
       },
