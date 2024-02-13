@@ -1,7 +1,7 @@
-import test from 'node:test';
-import * as assert from 'node:assert/strict';
-import { fileURLToPath } from 'node:url';
 import nock from 'nock';
+import * as assert from 'node:assert/strict';
+import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import youTubeSource from 'u-wave-source-youtube';
 
 const FAKE_KEY = 'AIzaSyVBDlZqp3o65v9zFWv0Qxij1rt3axCWqs9';

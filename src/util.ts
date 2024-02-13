@@ -1,7 +1,7 @@
-import parseIsoDuration from 'parse-iso-duration';
 import getArtistTitle from 'get-artist-title';
-import getYouTubeID from 'get-youtube-id';
 import getYouTubeChapters from 'get-youtube-chapters';
+import getYouTubeID from 'get-youtube-id';
+import parseIsoDuration from 'parse-iso-duration';
 import Client, { Thumbnails, VideoResource } from './Client';
 
 const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;

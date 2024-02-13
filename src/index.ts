@@ -1,8 +1,8 @@
-import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
-import { getVideos, parseMediaTitle, type UwMedia } from './util';
+import httpErrors from 'http-errors';
 import YouTubeClient, { type SearchOptions, type SearchResultResource } from './Client';
 import Importer from './Importer';
+import { getVideos, parseMediaTitle, type UwMedia } from './util';
 
 const { BadRequest } = httpErrors;
 
@@ -50,9 +50,11 @@ type ImportAction = { action: 'importplaylist', name: string, id: string };
  */
 export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): MediaSource {
   if (!opts || !opts.key) {
-    throw new TypeError('Expected a YouTube API key in "options.key". For information on how to '
-      + 'configure your YouTube API access, see '
-      + 'https://developers.google.com/youtube/v3/getting-started.');
+    throw new TypeError(
+      'Expected a YouTube API key in "options.key". For information on how to '
+        + 'configure your YouTube API access, see '
+        + 'https://developers.google.com/youtube/v3/getting-started.',
+    );
   }
 
   const params = { key: opts.key };
@@ -86,9 +88,12 @@ export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): Media
     const isVideo = (item: SearchResultResource) => item.id && item.id.videoId;
     const isBroadcast = (item: SearchResultResource) => item.snippet && item.snippet.liveBroadcastContent !== 'none';
 
-    return getVideos(client, data.items
-      .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
-      .map((item: SearchResultResource) => item.id.videoId));
+    return getVideos(
+      client,
+      data.items
+        .filter((item: SearchResultResource) => isVideo(item) && !isBroadcast(item))
+        .map((item: SearchResultResource) => item.id.videoId),
+    );
   }
 
   async function doImport(ctx: any, name: string, playlistID: string) {

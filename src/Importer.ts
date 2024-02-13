@@ -1,11 +1,6 @@
 import httpErrors from 'http-errors';
-import {
-  getPlaylistID,
-  getVideos,
-  getBestThumbnail,
-  type UwMedia,
-} from './util';
-import Client, { PlaylistResource, PlaylistItemResource } from './Client';
+import Client, { PlaylistItemResource, PlaylistResource } from './Client';
+import { getBestThumbnail, getPlaylistID, getVideos, type UwMedia } from './util';
 
 const { BadRequest, NotFound } = httpErrors;
 
@@ -85,8 +80,10 @@ export default class YouTubeImport {
       } while (page);
     } catch (error) {
       throw Object.assign(
-        new BadRequest('That playlist could not be imported. If it\'s a private playlist, '
-          + 'change its visibility to Unlisted and try again.'),
+        new BadRequest(
+          "That playlist could not be imported. If it's a private playlist, "
+            + 'change its visibility to Unlisted and try again.',
+        ),
         { cause: error },
       );
     }
@@ -120,8 +117,10 @@ export default class YouTubeImport {
   }> {
     const playlistID = getPlaylistID(url);
     if (!playlistID) {
-      throw new BadRequest('Invalid playlist URL. Please provide a direct link to the playlist '
-        + 'you want to import.');
+      throw new BadRequest(
+        'Invalid playlist URL. Please provide a direct link to the playlist '
+          + 'you want to import.',
+      );
     }
     const playlist = await this.getPlaylistMeta(playlistID);
     const items = await this.getPlaylistItems(playlistID);
@@ -156,8 +155,10 @@ export default class YouTubeImport {
       if (match) {
         idOptions = { forUsername: match[1] };
       } else {
-        throw new BadRequest('Invalid channel URL. Please provide a direct link to the channel or '
-          + 'user you want to import playlists from.');
+        throw new BadRequest(
+          'Invalid channel URL. Please provide a direct link to the channel or '
+            + 'user you want to import playlists from.',
+        );
       }
     }
 
@@ -166,8 +167,10 @@ export default class YouTubeImport {
       ...idOptions,
     });
     if (!data.items || data.items.length > 1) {
-      throw new NotFound('That channel could not be found. Please check that you provided the '
-        + 'full URL to the channel.');
+      throw new NotFound(
+        'That channel could not be found. Please check that you provided the '
+          + 'full URL to the channel.',
+      );
     }
 
     const channel = data.items[0];

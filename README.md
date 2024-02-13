@@ -1,5 +1,4 @@
-üWave YouTube Media Source
-==========================
+# üWave YouTube Media Source
 
 A üWave media source for searching through and importing videos from YouTube.
 
@@ -15,7 +14,7 @@ npm install --save u-wave-source-youtube
 import uwave from 'u-wave-core';
 import youTubeSource from 'u-wave-source-youtube';
 
-const uw = uwave({ /* your config */ });
+const uw = uwave({/* your config */});
 
 uw.source('youtube', youTubeSource, {
   // Get an API key as described here:
@@ -25,8 +24,8 @@ uw.source('youtube', youTubeSource, {
   // See https://developers.google.com/youtube/v3/docs/search/list#parameters
   // for available options.
   search: {
-    safeSearch: 'moderate'
-  }
+    safeSearch: 'moderate',
+  },
 });
 ```
 

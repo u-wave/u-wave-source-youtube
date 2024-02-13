@@ -19,12 +19,9 @@
     "@types/http-errors": "^2.0.0",
     "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "eslint": "^8.5.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.21.2",
+    "dprint": "^0.45.0",
     "nock": "^13.0.3",
+    "oxlint": "^0.2.8",
     "tsup": "^8.0.1",
     "typescript": "^5.0.2"
   },
@@ -45,8 +42,9 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "prepare": "npm run build",
+    "lint": "oxlint src && dprint check",
     "tests-only": "node test/test.js",
-    "test": "npm run build && npm run tests-only"
+    "test": "npm run build && npm run tests-only && npm run lint"
   },
   "typings": "./dist/index.d.ts"
 }

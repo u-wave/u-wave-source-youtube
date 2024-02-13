@@ -1,6 +1,6 @@
-import fetch from 'node-fetch';
 import createError from 'http-errors';
 import https from 'https';
+import fetch from 'node-fetch';
 
 /**
  * General interface for query parameters to the YouTube API.
@@ -74,9 +74,9 @@ export interface SearchResultResource {
  * https://developers.google.com/youtube/v3/docs/videos#resource
  */
 export interface VideoResource {
-  kind: 'youtube#video',
-  etag: string,
-  id: string,
+  kind: 'youtube#video';
+  etag: string;
+  id: string;
   snippet: {
     publishedAt: string,
     channelId: string,
@@ -90,10 +90,10 @@ export interface VideoResource {
     defaultLanguage: string,
     localized: {
       title: string,
-      description: string
+      description: string,
     },
-    defaultAudioLanguage: string
-  },
+    defaultAudioLanguage: string,
+  };
   contentDetails: {
     duration: string,
     dimension: string,
@@ -102,7 +102,7 @@ export interface VideoResource {
     licensedContent: boolean,
     regionRestriction: {
       allowed: string[],
-      blocked: string[]
+      blocked: string[],
     },
     contentRating: {
       acbRating: string,
@@ -173,11 +173,11 @@ export interface VideoResource {
       smaisRating: string,
       smsaRating: string,
       tvpgRating: string,
-      ytRating: string
+      ytRating: string,
     },
     projection: string,
-    hasCustomThumbnail: boolean
-  },
+    hasCustomThumbnail: boolean,
+  };
   status: {
     uploadStatus: string,
     failureReason: string,
@@ -186,28 +186,28 @@ export interface VideoResource {
     publishAt: string,
     license: string,
     embeddable: boolean,
-    publicStatsViewable: boolean
-  },
+    publicStatsViewable: boolean,
+  };
   statistics: {
     viewCount: number,
     likeCount: number,
     dislikeCount: number,
     favoriteCount: number,
     commentCount: number,
-  },
+  };
   player: {
     embedHtml: string,
     embedHeight: number,
-    embedWidth: number
-  },
+    embedWidth: number,
+  };
   topicDetails: {
     topicIds: string[],
     relevantTopicIds: string[],
-    topicCategories: string[]
-  },
+    topicCategories: string[],
+  };
   recordingDetails: {
-    recordingDate: string
-  },
+    recordingDate: string,
+  };
   fileDetails: {
     fileName: string,
     fileSize: number,
@@ -221,18 +221,18 @@ export interface VideoResource {
       codec: string,
       bitrateBps: number,
       rotation: string,
-      vendor: string
+      vendor: string,
     }[],
     audioStreams: {
       channelCount: number,
       codec: string,
       bitrateBps: number,
-      vendor: string
+      vendor: string,
     }[],
     durationMs: number,
     bitrateBps: number,
-    creationTime: string
-  },
+    creationTime: string,
+  };
   processingDetails: {
     processingStatus: string,
     processingProgress: {
@@ -245,32 +245,32 @@ export interface VideoResource {
     processingIssuesAvailability: string,
     tagSuggestionsAvailability: string,
     editorSuggestionsAvailability: string,
-    thumbnailsAvailability: string
-  },
+    thumbnailsAvailability: string,
+  };
   suggestions: {
     processingErrors: string[],
     processingWarnings: string[],
     processingHints: string[],
     tagSuggestions: {
       tag: string,
-      categoryRestricts: string[]
+      categoryRestricts: string[],
     }[],
     editorSuggestions: string[],
-  },
+  };
   liveStreamingDetails: {
     actualStartTime: string,
     actualEndTime: string,
     scheduledStartTime: string,
     scheduledEndTime: string,
     concurrentViewers: number,
-    activeLiveChatId: string
-  },
+    activeLiveChatId: string,
+  };
   localizations: {
     [key: string]: {
       title: string,
-      description: string
-    }
-  }
+      description: string,
+    },
+  };
 }
 
 /**
@@ -279,9 +279,9 @@ export interface VideoResource {
  * https://developers.google.com/youtube/v3/docs/playlistItems#resource
  */
 export interface PlaylistItemResource {
-  kind: 'youtube#playlistItem',
-  etag: string,
-  id: string,
+  kind: 'youtube#playlistItem';
+  etag: string;
+  id: string;
   snippet: {
     publishedAt: string,
     channelId: string,
@@ -294,16 +294,16 @@ export interface PlaylistItemResource {
     resourceId: {
       kind: string,
       videoId: string,
-    }
-  },
+    },
+  };
   contentDetails: {
     videoId: string,
     startAt: string,
     endAt: string,
     note: string,
     videoPublishedAt: string,
-  },
-  status: { privacyStatus: string },
+  };
+  status: { privacyStatus: string };
 }
 
 /**
@@ -312,9 +312,9 @@ export interface PlaylistItemResource {
  * https://developers.google.com/youtube/v3/docs/playlists#resource
  */
 export interface PlaylistResource {
-  kind: 'youtube#playlist',
-  etag: string,
-  id: string,
+  kind: 'youtube#playlist';
+  etag: string;
+  id: string;
   snippet: {
     publishedAt: string,
     channelId: string,
@@ -328,16 +328,16 @@ export interface PlaylistResource {
       title: string,
       description: string,
     },
-  },
-  status: { privacyStatus: string },
-  contentDetails: { itemCount: number },
-  player: { embedHtml: string },
+  };
+  status: { privacyStatus: string };
+  contentDetails: { itemCount: number };
+  player: { embedHtml: string };
   localizations: {
     [key: string]: {
       title: string,
       description: string,
     },
-  },
+  };
 }
 
 /**
@@ -346,9 +346,9 @@ export interface PlaylistResource {
  * https://developers.google.com/youtube/v3/docs/channels#resource
  */
 export interface ChannelResource {
-  kind: 'youtube#channel',
-  etag: string,
-  id: string,
+  kind: 'youtube#channel';
+  etag: string;
+  id: string;
   snippet: {
     title: string,
     description: string,
@@ -358,35 +358,35 @@ export interface ChannelResource {
     defaultLanguage: string,
     localized: {
       title: string,
-      description: string
+      description: string,
     },
-    country: string
-  },
+    country: string,
+  };
   contentDetails: {
     relatedPlaylists: {
       likes: string,
       favorites: string,
       uploads: string,
       watchHistory: string,
-      watchLater: string
-    }
-  },
+      watchLater: string,
+    },
+  };
   statistics: {
     viewCount: number,
     commentCount: number,
     subscriberCount: number,
     hiddenSubscriberCount: boolean,
     videoCount: number,
-  },
+  };
   topicDetails: {
     topicIds: string[],
-    topicCategories: string[]
-  },
+    topicCategories: string[],
+  };
   status: {
     privacyStatus: string,
     isLinked: boolean,
-    longUploadsStatus: string
-  },
+    longUploadsStatus: string,
+  };
   brandingSettings: {
     channel: {
       title: string,
@@ -402,12 +402,12 @@ export interface ChannelResource {
       unsubscribedTrailer: string,
       profileColor: string,
       defaultLanguage: string,
-      country: string
+      country: string,
     },
     watch: {
       textColor: string,
       backgroundColor: string,
-      featuredPlaylistId: string
+      featuredPlaylistId: string,
     },
     image: {
       bannerImageUrl: string,
@@ -426,13 +426,13 @@ export interface ChannelResource {
       bannerTvLowImageUrl: string,
       bannerTvMediumImageUrl: string,
       bannerTvHighImageUrl: string,
-      bannerExternalUrl: string
+      bannerExternalUrl: string,
     },
     hints: {
       property: string,
-      value: string
+      value: string,
     }[],
-  },
+  };
   invideoPromotion: {
     defaultTiming: {
       type: string,
@@ -459,23 +459,23 @@ export interface ChannelResource {
       promotedByContentOwner: boolean,
     }[],
     useSmartTiming: boolean,
-  },
+  };
   auditDetails: {
     overallGoodStanding: boolean,
     communityGuidelinesGoodStanding: boolean,
     copyrightStrikesGoodStanding: boolean,
     contentIdClaimsGoodStanding: boolean,
-  },
+  };
   contentOwnerDetails: {
     contentOwner: string,
     timeLinked: string,
-  },
+  };
   localizations: {
     [key: string]: {
       title: string,
       description: string,
     },
-  },
+  };
 }
 
 export type RequestOptions = {
@@ -485,21 +485,21 @@ export type RequestOptions = {
   pageToken?: string,
 };
 export type SearchOptions = RequestOptions & {
-  q: string;
-  type: string;
-  safeSearch?: string;
-  videoSyndicated?: 'true' | 'any';
-}
+  q: string,
+  type: string,
+  safeSearch?: string,
+  videoSyndicated?: 'true' | 'any',
+};
 export type ListVideosOptions = RequestOptions & {
   id: string,
   maxWidth?: number,
   maxHeight?: number,
-}
+};
 export type ListPlaylistItemsOptions = RequestOptions & {
   playlistId: string,
-}
-export type ListPlaylistsOptions = RequestOptions & ({ channelId: string } | { id: string })
-export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { id: string })
+};
+export type ListPlaylistsOptions = RequestOptions & ({ channelId: string } | { id: string });
+export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { id: string });
 
 /**
  * A small YouTube Data API client.
@@ -544,11 +544,15 @@ export default class YouTubeClient {
     return this.get<ListResponse<'youtube#videoListResponse', VideoResource>>('videos', options);
   }
 
-  listPlaylistItems(options: ListPlaylistItemsOptions): Promise<ListResponse<'youtube#playlistItemListResponse', PlaylistItemResource>> {
+  listPlaylistItems(
+    options: ListPlaylistItemsOptions,
+  ): Promise<ListResponse<'youtube#playlistItemListResponse', PlaylistItemResource>> {
     return this.get<ListResponse<'youtube#playlistItemListResponse', PlaylistItemResource>>('playlistItems', options);
   }
 
-  listPlaylists(options: ListPlaylistsOptions): Promise<ListResponse<'youtube#playlistListResponse', PlaylistResource>> {
+  listPlaylists(
+    options: ListPlaylistsOptions,
+  ): Promise<ListResponse<'youtube#playlistListResponse', PlaylistResource>> {
     return this.get<ListResponse<'youtube#playlistListResponse', PlaylistResource>>('playlists', options);
   }
 
