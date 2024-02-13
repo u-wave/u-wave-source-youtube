@@ -1,7 +1,7 @@
 import httpErrors from 'http-errors';
 import getYouTubeID from 'get-youtube-id';
 import { getVideos, parseMediaTitle, type UwMedia } from './util';
-import YouTubeClient, { SearchOptions, SearchResultResource } from './Client';
+import YouTubeClient, { type SearchOptions, type SearchResultResource } from './Client';
 import Importer from './Importer';
 
 const { BadRequest } = httpErrors;
