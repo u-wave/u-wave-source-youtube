@@ -19,7 +19,7 @@
     "@types/http-errors": "^2.0.0",
     "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
-    "dprint": "^0.45.0",
+    "dprint": "^0.46.1",
     "nock": "^13.0.3",
     "oxlint": "^0.4.1",
     "tsup": "^8.0.1",
