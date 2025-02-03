@@ -20,7 +20,7 @@
     "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
     "dprint": "^0.48.0",
-    "nock": "^13.0.3",
+    "nock": "^14.0.0",
     "oxlint": "^0.15.2",
     "tsup": "^8.0.1",
     "typescript": "^5.0.2"
