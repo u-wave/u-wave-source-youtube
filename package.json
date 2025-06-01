@@ -12,12 +12,10 @@
     "get-youtube-chapters": "^2.0.0",
     "get-youtube-id": "^1.0.0",
     "http-errors": "^2.0.0",
-    "node-fetch": "^2.6.0",
     "parse-iso-duration": "^1.1.0"
   },
   "devDependencies": {
     "@types/http-errors": "^2.0.0",
-    "@types/node-fetch": "^2.5.4",
     "@types/qs": "^6.9.4",
     "dprint": "^0.50.0",
     "nock": "^14.0.0",
