@@ -1,6 +1,4 @@
 import createError from 'http-errors';
-import https from 'https';
-import fetch from 'node-fetch';
 
 /**
  * General interface for query parameters to the YouTube API.
@@ -507,8 +505,6 @@ export type ListChannelsOptions = RequestOptions & ({ forUsername: string } | { 
 export default class YouTubeClient {
   private params: Params;
 
-  private agent: https.Agent;
-
   private baseUrl = 'https://www.googleapis.com/youtube/v3';
 
   /**
@@ -516,7 +512,6 @@ export default class YouTubeClient {
    */
   constructor(params: Params) {
     this.params = params;
-    this.agent = new https.Agent({ keepAlive: true });
   }
 
   private async get<TResponse>(resource: string, options: Params): Promise<TResponse> {
@@ -526,9 +521,7 @@ export default class YouTubeClient {
         .map(([key, value]) => [key, String(value)]),
     );
     const query = new URLSearchParams(params);
-    const response = await fetch(`${this.baseUrl}/${resource}?${query}`, {
-      agent: this.agent,
-    });
+    const response = await fetch(`${this.baseUrl}/${resource}?${query}`);
     const data = await response.json();
     if (!response.ok) {
       throw createError(response.status, data.error.message);
