@@ -1,5 +1,5 @@
 import httpErrors from 'http-errors';
-import Client, { PlaylistItemResource, PlaylistResource } from './Client';
+import Client, { type PlaylistItemResource, type PlaylistResource } from './Client';
 import { getBestThumbnail, getPlaylistID, getVideos, type UwMedia } from './util';
 
 const { BadRequest, NotFound } = httpErrors;
@@ -105,7 +105,11 @@ export default class YouTubeImport {
       id: playlistID,
       maxResults: 1,
     });
-    return data.items[0];
+    const [playlist] = data.items;
+    if (playlist == null) {
+      throw new NotFound('Playlist not found.');
+    }
+    return playlist;
   }
 
   async getImportablePlaylist(url: string): Promise<{
@@ -149,11 +153,11 @@ export default class YouTubeImport {
     };
     let idOptions;
     if (match) {
-      idOptions = { id: match[1] };
+      idOptions = { id: match[1]! };
     } else {
       match = url.match(rxUserUrl);
       if (match) {
-        idOptions = { forUsername: match[1] };
+        idOptions = { forUsername: match[1]! };
       } else {
         throw new BadRequest(
           'Invalid channel URL. Please provide a direct link to the channel or '
@@ -173,7 +177,7 @@ export default class YouTubeImport {
       );
     }
 
-    const channel = data.items[0];
+    const channel = data.items[0]!;
     return {
       id: channel.id,
       title: channel.snippet.title,

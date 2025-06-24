@@ -2,7 +2,7 @@ import getArtistTitle from 'get-artist-title';
 import getYouTubeChapters from 'get-youtube-chapters';
 import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
-import Client, { Thumbnails, VideoResource } from './Client';
+import Client, { type Thumbnails, type VideoResource } from './Client';
 
 const rxSimplePlaylistUrl = /youtube\.com\/(?:playlist|watch)\?.*?list=([a-z0-9_-]+)/i;
 const rxPlaylistID = /^([a-z0-9_-]+)$/i;
@@ -17,7 +17,7 @@ export function getPlaylistID(url: string): string | null {
 
   const match = url.match(rxSimplePlaylistUrl);
   if (match) {
-    return match[1];
+    return match[1]!;
   }
 
   return null;
@@ -93,7 +93,7 @@ function convertVideoToMedia(video: VideoResource): UwMedia {
         if (index < chapters.length - 1) {
           return {
             ...chapter,
-            end: chapters[index + 1].start,
+            end: chapters[index + 1]!.start,
           };
         }
         return {

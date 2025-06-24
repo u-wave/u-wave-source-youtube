@@ -20,6 +20,20 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm run tests-only
+  types:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm install
+      - name: Check types
+        run: npm run types
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -32,5 +46,5 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm install
-      - name: Run tests
+      - name: Check style
         run: npm run lint
