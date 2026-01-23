@@ -10,7 +10,6 @@
   "dependencies": {
     "get-artist-title": "^1.2.0",
     "get-youtube-chapters": "^2.0.0",
-    "get-youtube-id": "^1.0.0",
     "http-errors": "^2.0.0",
     "parse-iso-duration": "^1.1.0"
   },

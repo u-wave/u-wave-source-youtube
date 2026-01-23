@@ -1,8 +1,7 @@
-import getYouTubeID from 'get-youtube-id';
 import httpErrors from 'http-errors';
 import YouTubeClient, { type SearchOptions, type SearchResultResource } from './Client';
 import Importer from './Importer';
-import { getVideos, parseMediaTitle, type UwMedia } from './util';
+import { getVideos, getYouTubeID, parseMediaTitle, type UwMedia } from './util';
 
 const { BadRequest } = httpErrors;
 
@@ -73,7 +72,7 @@ export default function youTubeSource(_uw: unknown, opts: YouTubeOptions): Media
     // Actual YouTube search is not well suited for video IDs, and IDs with special characters in
     // them can yield no or unexpected results. Additionally, we can save 99 quota points by using
     // the videos.list endpoint instead of search.list.
-    const id = getYouTubeID(query, { fuzzy: false });
+    const id = getYouTubeID(query);
     if (id) {
       return getVideos(client, [id]);
     }

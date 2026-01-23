@@ -1,6 +1,5 @@
 import getArtistTitle from 'get-artist-title';
 import getYouTubeChapters from 'get-youtube-chapters';
-import getYouTubeID from 'get-youtube-id';
 import parseIsoDuration from 'parse-iso-duration';
 import Client, { type Thumbnails, type VideoResource } from './Client';
 
@@ -124,6 +123,21 @@ export function parseMediaTitle(media: UwMedia): UwMedia {
   };
 }
 
+// Based on https://github.com/jmorrell/get-youtube-id, MIT licence
+const rxYouTubeURL = /youtu\.be|youtube\.com/;
+const rxYouTubeID = /(?:youtu\.be\/|\?v=|&v=|embed\/|\/v\/)([^#&?]{11})/;
+export function getYouTubeID(url: string) {
+  if (!rxYouTubeURL.test(url)) {
+    return;
+  }
+
+  // If any pattern matches, return the ID
+  const match = rxYouTubeID.exec(url);
+  if (match != null) {
+    return match[1]!;
+  }
+}
+
 async function getVideosPage(client: Client, sourceIDs: string[]): Promise<UwMedia[]> {
   const data = await client.listVideos({
     part: 'snippet,contentDetails,player',
@@ -158,7 +172,7 @@ function* chunk<T>(input: T[], chunkSize: number) {
  * Fetch Video resources from the YouTube Data API.
  */
 export async function getVideos(client: Client, sourceIDs: string[]): Promise<UwMedia[]> {
-  const ids = sourceIDs.map((id) => getYouTubeID(id) || id);
+  const ids = sourceIDs.map((id) => getYouTubeID(id) ?? id);
 
   const pageIDs = Array.from(chunk(ids, 50));
   const pages = await Promise.all(pageIDs.map((page) => getVideosPage(client, page)));
