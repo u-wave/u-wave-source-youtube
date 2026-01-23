@@ -1,7 +1,7 @@
 import httpErrors from 'http-errors';
-import YouTubeClient, { type SearchOptions, type SearchResultResource } from './Client';
-import Importer from './Importer';
-import { getVideos, getYouTubeID, parseMediaTitle, type UwMedia } from './util';
+import YouTubeClient, { type SearchOptions, type SearchResultResource } from './Client.js';
+import Importer from './Importer.js';
+import { getVideos, getYouTubeID, parseMediaTitle, type UwMedia } from './util.js';
 
 const { BadRequest } = httpErrors;
 

@@ -1,6 +1,6 @@
 import httpErrors from 'http-errors';
-import Client, { type PlaylistItemResource, type PlaylistResource } from './Client';
-import { getBestThumbnail, getPlaylistID, getVideos, type UwMedia } from './util';
+import Client, { type PlaylistItemResource, type PlaylistResource } from './Client.js';
+import { getBestThumbnail, getPlaylistID, getVideos, type UwMedia } from './util.js';
 
 const { BadRequest, NotFound } = httpErrors;
 
