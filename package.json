@@ -19,15 +19,15 @@
     "dprint": "^0.53.0",
     "nock": "^14.0.0",
     "oxlint": "^1.1.0",
-    "tsup": "^8.0.1",
+    "tsdown": "^0.21.7",
     "typescript": "^5.0.2"
   },
   "engines": {
     "node": ">= 20"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
   "keywords": [
@@ -37,7 +37,7 @@
   "license": "MIT",
   "repository": "u-wave/u-wave-source-youtube",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
+    "build": "tsdown src/index.ts --format esm --dts",
     "prepare": "npm run build",
     "lint": "oxlint src && dprint check",
     "tests-only": "node test/test.js",
