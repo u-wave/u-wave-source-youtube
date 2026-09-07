@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/http-errors": "^2.0.0",
     "@types/qs": "^6.9.4",
-    "dprint": "^0.55.1",
+    "dprint": "^0.57.1",
     "nock": "^14.0.0",
     "oxlint": "^1.1.0",
     "tsdown": "^0.22.0",
